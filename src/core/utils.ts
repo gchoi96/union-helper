@@ -2,7 +2,6 @@ import { SELECT_WORLD_CHARACTER, UNION_GRADE } from "@core/constants";
 import { UnionGrade } from "@core/types/UnionGrade";
 
 export const calcUnionGrade = (totalLevel: number): UnionGrade => {
-    console.log(Object.values(UNION_GRADE)[Math.floor(Math.floor(totalLevel / 500))])
     return Object.values(UNION_GRADE)[Math.floor(Math.floor(totalLevel / 500))];
 };
 

@@ -1,4 +1,4 @@
-import UnionBoard from "@core/classes/Board";
+import UnionBoard from "@core/classes/UnionBoard";
 import { calcUnionGrade } from "@core/utils";
 import { useEffect, useRef } from "react";
 
