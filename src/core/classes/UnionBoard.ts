@@ -1,5 +1,5 @@
 import { DEFAULT_AREA_HEIGHT, DEFAULT_AREA_WIDTH, UNION_BOARD_HEIGHT, UNION_BOARD_WIDTH } from "@core/constants";
-import { CELL_STATUS, CHECK_STATE } from "@core/enums";
+import { CELL_STATUS } from "@core/enums";
 import { Cell } from "@core/types/Cell";
 import { Delta, Position } from "@core/types/Position";
 import { UnionGrade } from "@core/types/UnionGrade";
