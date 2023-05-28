@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 export default function InitBoardTest() {
     useEffect(() => {
         new UnionBoard(calcUnionGrade(3500)).t_display();
-        console.log(Block.createBlock({
+        console.log(Block.blockFactory({
             nickName: "asd",
             job: JOB_MAP.나이트로드,
             level: 200,

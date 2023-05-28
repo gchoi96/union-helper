@@ -2,15 +2,16 @@ import { ERROR } from "../constants";
 import { BLOCK_STATUS, JOB_GROUP } from "../enums";
 import { CharacterInfo } from "../types/CharacterInfo";
 import { Position } from "../types/Position";
+import { BlockShape, BlockShapeMap } from "./BlockShape";
 
 export class Block {
     readonly size: number;
     readonly level: number;
     readonly character: CharacterInfo;
     private status = BLOCK_STATUS.NOT_IN_USE;
-    private area: Position[] = [];
+    private shapes: BlockShape[] = [];
     static additionalArea: Position[] = [];
-    static createBlock(character: CharacterInfo) {
+    static blockFactory(character: CharacterInfo) {
         switch (character.job.group) {
             case JOB_GROUP.전사:
                 return new WarriorBlock(character);
@@ -33,7 +34,7 @@ export class Block {
         this.level = Block.calcBlockLevel(character.level);
         this.size = this.level + 2;
         this.character = character;
-        this.initArea();
+        this.initShape();
     }
 
     static calcBlockLevel(characterLevel: number) {
@@ -44,8 +45,16 @@ export class Block {
         return 5;
     }
 
-    initArea() {
-        this.area = (this.constructor as typeof Block).additionalArea.slice(0, this.level);
+    initShape() {
+        const positions = (this.constructor as typeof Block).additionalArea.slice(
+            0,
+            this.level
+        );
+        this.shapes = BlockShapeMap.getBlockShape(
+            this.character.job.group,
+            this.level,
+            positions
+        );
     }
 
     getStatus() {

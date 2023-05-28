@@ -1,7 +1,5 @@
 export interface Position {
-    // row
     y: number;
-    // column
     x: number;
 }
 
