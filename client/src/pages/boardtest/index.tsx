@@ -7,12 +7,14 @@ import { useEffect, useRef } from "react";
 export default function InitBoardTest() {
     useEffect(() => {
         new UnionBoard(calcUnionGrade(3500)).t_display();
-        console.log(Block.blockFactory({
-            nickName: "asd",
-            job: JOB_MAP.나이트로드,
-            level: 200,
-            image: "",
-        }))
+        console.log(
+            Block.blockFactory({
+                nickName: "asd",
+                job: JOB_MAP.나이트로드,
+                level: 200,
+                image: "",
+            })
+        );
     });
     return <div style={{ width: "100vw", height: "100vh", padding: "10%" }}></div>;
 }

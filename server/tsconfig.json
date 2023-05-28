@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "lib": ["ES2021"],
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "outDir": "./dist",
+        "module": "commonJS",
+        "baseUrl": ".",
+        "moduleResolution": "node",
+        // "isolatedModules": true,
+        // "incremental": true
+    },
+    "include": ["src/*"],
+    "exclude": ["node_modules"]
+}

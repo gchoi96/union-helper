@@ -63,8 +63,4 @@ export class BlockShape {
             this.positions.map(({ y, x }) => ({ y, x: -x || 0 }))
         );
     }
-
-    // private flipAllDirections(): BlockShape {
-    //     return this.flipVertical().flipHorizontal();
-    // }
 }
