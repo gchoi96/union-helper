@@ -15,6 +15,24 @@ export enum CHECK_STATUS {
     UNCHECKED,
 }
 
+export enum ERROR {
+    BLOCK_IN_USE = "Block is already in use",
+    INVALID_CHARACTER = "Invalid character information",
+    INVALID_COPIED_TEXT = "Invalid copied text",
+    TRAPEZOID_CORNER_COUNT = "The number of corners in the trapezoid must be four.",
+}
+
+export enum EXTERNAL_AREA {
+    크리티컬데미지 = "크리티컬 데미지",
+    방어율무시 = "방어율무시",
+    버프지속시간 = "버프지속시간",
+    일반데미지 = "일반데미지",
+    보스데미지 = "보스데미지",
+    크리티컬확률 = "크리티컬 확률",
+    획득경험치 = "획득경험치",
+    상태이상내성 = "상태이상내성",
+}
+
 export enum JOB {
     히어로 = "히어로",
     팔라딘 = "팔라딘",

@@ -1,5 +1,5 @@
 import { JOB_GROUP } from "../enums";
-import { Position } from "../types/Position";
+import Position from "./Position";
 
 const blockShapeMap: { [key in JOB_GROUP]?: { [key: number]: BlockShape } } = {};
 export class BlockShapeMap {
@@ -25,7 +25,7 @@ export class BlockShape {
         let blockShape: BlockShape = this;
         const transformations: BlockShape[] = [blockShape];
         for (let i = 0; i < 4; i++) {
-            const curr: BlockShape[] = [blockShape];           
+            const curr: BlockShape[] = [blockShape];
             curr.push(blockShape.flipVertical());
             curr.push(blockShape.flipHorizontal());
             curr.forEach((shape) => {
@@ -47,20 +47,14 @@ export class BlockShape {
     }
 
     private rotate(): BlockShape {
-        return new BlockShape(
-            this.positions.map(({ y, x }) => ({ y: x, x: -y || 0 }))
-        );
+        return new BlockShape(this.positions.map(({ y, x }) => new Position(x, -y || 0)));
     }
 
     private flipVertical(): BlockShape {
-        return new BlockShape(
-            this.positions.map(({ y, x }) => ({ y: -y || 0, x }))
-        );
+        return new BlockShape(this.positions.map(({ y, x }) => new Position(-y || 0, x)));
     }
 
     private flipHorizontal(): BlockShape {
-        return new BlockShape(
-            this.positions.map(({ y, x }) => ({ y, x: -x || 0 }))
-        );
+        return new BlockShape(this.positions.map(({ y, x }) => new Position(y, -x || 0)));
     }
 }

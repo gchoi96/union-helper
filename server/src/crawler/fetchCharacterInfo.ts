@@ -1,22 +1,28 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { SEARCH_RANKING_URL } from "../constants";
+import { SEARCH_RANKING_URL1, SEARCH_RANKING_URL2 } from "../constants";
 import { CharacterInfo } from "../types/CharacterInfo";
 import cache from "../core/cache/cache";
-const createUrl = (nickName: string) => SEARCH_RANKING_URL + nickName;
+const createUrl = (nickName: string, isReboot = false) =>
+    (isReboot ? SEARCH_RANKING_URL2 : SEARCH_RANKING_URL1) + nickName;
 export const fetchCharacterInfo = async (
     nickName: string,
     renew: boolean
-): Promise<CharacterInfo> => {
-    if (!renew && cache.has(nickName)) {
-        const cachedData = cache.get(nickName);
-        if (cachedData) return cachedData;
+): Promise<CharacterInfo | undefined> => {
+    if (!renew && cache.get(nickName)) return cache.get(nickName);
+    let characterInfo: CharacterInfo;
+
+    try {
+        characterInfo = extractCharacterInfoFromHTML(
+            nickName,
+            (await axios.get(createUrl(nickName))).data
+        );
+    } catch (err) {
+        characterInfo = extractCharacterInfoFromHTML(
+            nickName,
+            (await axios.get(createUrl(nickName, true))).data
+        );
     }
-    const response = await axios.get(createUrl(nickName));
-    const characterInfo: CharacterInfo = extractCharacterInfoFromHTML(
-        nickName,
-        response.data
-    );
     cache.set(nickName, characterInfo);
     return characterInfo;
 };

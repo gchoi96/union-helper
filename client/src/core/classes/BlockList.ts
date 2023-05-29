@@ -2,8 +2,8 @@ import { JOB_GROUP } from "../enums";
 import { Block } from "./Block";
 
 export default class BlockList {
+    private totalLevel = 0;
     readonly blocks: Block[];
-
     readonly blockCount: { [key in JOB_GROUP]: number } = {
         [JOB_GROUP.전사]: 0,
         [JOB_GROUP.궁수]: 0,
@@ -14,11 +14,22 @@ export default class BlockList {
     };
 
     constructor(blocks: Block[]) {
-        this.blocks = blocks;
-        this.initBlockCount();
+        this.blocks = [...blocks].sort((a,b) => b.level - a.level);
+        this.initBlocks();
     }
 
-    initBlockCount() {
-        this.blocks.forEach((block) => this.blockCount[block.character.job.group]++);
+    getTotalLevel() {
+        return this.totalLevel;
+    }
+
+    getAvailableSize(blockCount: number) {
+        return this.blocks.slice(0, blockCount).reduce((acc, cur) => acc + cur.size, 0);
+    }
+
+    initBlocks() {
+        this.blocks.forEach((block) => {
+            this.totalLevel += block.character.level;
+            this.blockCount[block.character.job!.group]++;
+        });
     }
 }

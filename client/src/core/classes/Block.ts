@@ -1,17 +1,18 @@
-import { ERROR } from "../constants";
-import { BLOCK_STATUS, JOB_GROUP } from "../enums";
+import { BLOCK_STATUS, ERROR, JOB_GROUP } from "../enums";
 import { CharacterInfo } from "../types/CharacterInfo";
-import { Position } from "../types/Position";
 import { BlockShape, BlockShapeMap } from "./BlockShape";
+import Position from "./Position";
 
 export class Block {
     readonly size: number;
     readonly level: number;
     readonly character: CharacterInfo;
     private status = BLOCK_STATUS.NOT_IN_USE;
-    private shapes: BlockShape[] = [];
+    readonly shapes: BlockShape[] = [];
     static additionalArea: Position[] = [];
+
     static blockFactory(character: CharacterInfo) {
+        if (!character.job) throw new Error(ERROR.INVALID_CHARACTER);
         switch (character.job.group) {
             case JOB_GROUP.전사:
                 return new WarriorBlock(character);
@@ -30,11 +31,11 @@ export class Block {
         }
     }
 
-    constructor(character: CharacterInfo) {
+    protected constructor(character: CharacterInfo) {
         this.level = Block.calcBlockLevel(character.level);
-        this.size = this.level + 2;
+        this.size = this.level;
         this.character = character;
-        this.initShape();
+        this.shapes = this.initShape();
     }
 
     static calcBlockLevel(characterLevel: number) {
@@ -45,13 +46,13 @@ export class Block {
         return 5;
     }
 
-    initShape() {
+    private initShape() {
         const positions = (this.constructor as typeof Block).additionalArea.slice(
             0,
             this.level
         );
-        this.shapes = BlockShapeMap.getBlockShape(
-            this.character.job.group,
+        return BlockShapeMap.getBlockShape(
+            this.character.job!.group!,
             this.level,
             positions
         );
@@ -72,11 +73,11 @@ export class Block {
 }
 export class WarriorBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 1, x: 0 },
-        { y: 1, x: 1 },
-        { y: 0, x: 2 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(1, 0),
+        new Position(1, 1),
+        new Position(0, 2),
     ];
     constructor(character: CharacterInfo) {
         super(character);
@@ -84,11 +85,11 @@ export class WarriorBlock extends Block {
 }
 export class ArcherBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 0, x: -1 },
-        { y: 0, x: 2 },
-        { y: 0, x: -2 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(0, -1),
+        new Position(0, 2),
+        new Position(0, -2),
     ];
     constructor(character: CharacterInfo) {
         super(character);
@@ -96,11 +97,11 @@ export class ArcherBlock extends Block {
 }
 export class MageBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 0, x: -1 },
-        { y: 1, x: 0 },
-        { y: -1, x: 0 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(0, -1),
+        new Position(1, 0),
+        new Position(-1, 0),
     ];
     constructor(character: CharacterInfo) {
         super(character);
@@ -108,11 +109,11 @@ export class MageBlock extends Block {
 }
 export class RogueBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 0, x: -1 },
-        { y: 1, x: 1 },
-        { y: -1, x: 1 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(0, -1),
+        new Position(1, 1),
+        new Position(-1, 1),
     ];
     constructor(character: CharacterInfo) {
         super(character);
@@ -120,11 +121,11 @@ export class RogueBlock extends Block {
 }
 export class PirateBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 1, x: 0 },
-        { y: -1, x: 1 },
-        { y: -2, x: 1 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(1, 0),
+        new Position(-1, 1),
+        new Position(-2, 1),
     ];
     constructor(character: CharacterInfo) {
         super(character);
@@ -132,11 +133,11 @@ export class PirateBlock extends Block {
 }
 export class XenonBlock extends Block {
     static additionalArea: Position[] = [
-        { y: 0, x: 0 },
-        { y: 0, x: 1 },
-        { y: 0, x: -1 },
-        { y: 1, x: 1 },
-        { y: -1, x: -1 },
+        new Position(0, 0),
+        new Position(0, 1),
+        new Position(0, -1),
+        new Position(1, 1),
+        new Position(-1, -1),
     ];
     constructor(character: CharacterInfo) {
         super(character);
