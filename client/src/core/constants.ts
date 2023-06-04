@@ -1,9 +1,9 @@
 import { UnionGrade } from "@core/types/UnionGrade";
-import Position from "./classes/Position";
-import Trapezoid from "./classes/Trapezoid";
-import { EXTERNAL_AREA, JOB, JOB_GROUP } from "./enums";
-import { ExternalAreaInfo } from "./types/ExternalAreaInfo";
-import { JobInfo } from "./types/JobInfo";
+import Position from "@core/classes/Position";
+import Trapezoid from "@core/classes/Trapezoid";
+import { EXTERNAL_AREA, JOB, JOB_GROUP } from "@core/enums";
+import { ExternalAreaInfo } from "@core/types/ExternalAreaInfo";
+import { JobInfo } from "@core/types/JobInfo";
 
 export const UNION_BOARD_WIDTH = 22;
 export const UNION_BOARD_HEIGHT = 20;
@@ -27,6 +27,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(2, 2),
             new Position(3, 3),
             new Position(4, 4),
+            new Position(9, 0),
+            new Position(9, 1),
+            new Position(9, 2),
+            new Position(9, 3),
+            new Position(9, 4),
         ],
     },
     [EXTERNAL_AREA.방어율무시]: {
@@ -43,6 +48,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(17, 2),
             new Position(18, 1),
             new Position(19, 0),
+            new Position(10, 0),
+            new Position(10, 1),
+            new Position(10, 2),
+            new Position(10, 3),
+            new Position(10, 4),
         ],
     },
     [EXTERNAL_AREA.버프지속시간]: {
@@ -59,6 +69,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(17, 3),
             new Position(18, 2),
             new Position(19, 1),
+            new Position(15, 10),
+            new Position(16, 10),
+            new Position(17, 10),
+            new Position(18, 10),
+            new Position(19, 10),
         ],
     },
     [EXTERNAL_AREA.일반데미지]: {
@@ -75,6 +90,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(17, 18),
             new Position(18, 19),
             new Position(19, 20),
+            new Position(15, 11),
+            new Position(16, 11),
+            new Position(17, 11),
+            new Position(18, 11),
+            new Position(19, 11),
         ],
     },
     [EXTERNAL_AREA.보스데미지]: {
@@ -91,6 +111,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(17, 19),
             new Position(18, 20),
             new Position(19, 21),
+            new Position(10, 17),
+            new Position(10, 18),
+            new Position(10, 19),
+            new Position(10, 20),
+            new Position(10, 21),
         ],
     },
     [EXTERNAL_AREA.크리티컬확률]: {
@@ -107,6 +132,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(2, 19),
             new Position(1, 20),
             new Position(0, 21),
+            new Position(9, 18),
+            new Position(9, 17),
+            new Position(9, 19),
+            new Position(9, 20),
+            new Position(9, 21),
         ],
     },
     [EXTERNAL_AREA.획득경험치]: {
@@ -123,6 +153,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(2, 18),
             new Position(1, 19),
             new Position(0, 20),
+            new Position(4, 11),
+            new Position(3, 11),
+            new Position(2, 11),
+            new Position(1, 11),
+            new Position(0, 11),
         ],
     },
     [EXTERNAL_AREA.상태이상내성]: {
@@ -139,6 +174,11 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
             new Position(2, 3),
             new Position(1, 2),
             new Position(0, 1),
+            new Position(4, 10),
+            new Position(3, 10),
+            new Position(2, 10),
+            new Position(1, 10),
+            new Position(0, 10),
         ],
     },
 };
@@ -177,7 +217,7 @@ export const EXTERNAL_AREA_MAP2: Readonly<{ [key in EXTERNAL_AREA]: Position[] }
         new Position(4, 1),
         new Position(3, 1),
         new Position(2, 1),
-        new Position(2, 1),
+        new Position(1, 1),
         new Position(9, 0),
         new Position(8, 0),
         new Position(7, 0),
@@ -187,8 +227,8 @@ export const EXTERNAL_AREA_MAP2: Readonly<{ [key in EXTERNAL_AREA]: Position[] }
         new Position(4, 0),
         new Position(3, 0),
         new Position(2, 0),
-        new Position(2, 0),
-        new Position(2, 0),
+        new Position(1, 0),
+        new Position(0, 0),
     ],
     [EXTERNAL_AREA.방어율무시]: [
         new Position(10, 4),

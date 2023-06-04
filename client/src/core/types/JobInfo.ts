@@ -1,4 +1,4 @@
-import { JOB, JOB_GROUP } from "../enums";
+import { JOB, JOB_GROUP } from "@core/enums";
 
 export interface JobInfo {
   name: JOB;

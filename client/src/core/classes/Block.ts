@@ -1,15 +1,14 @@
-import { BLOCK_STATUS, ERROR, JOB_GROUP } from "../enums";
-import { CharacterInfo } from "../types/CharacterInfo";
-import { BlockShape, BlockShapeMap } from "./BlockShape";
-import Position from "./Position";
+import { BLOCK_STATUS, ERROR, JOB_GROUP } from "@core/enums";
+import { CharacterInfo } from "@core/types/CharacterInfo";
+import { BlockShape, BlockShapeMap } from "@core/classes/BlockShape";
+import { Delta } from "../types/Delta";
 
 export class Block {
     readonly size: number;
-    readonly level: number;
     readonly character: CharacterInfo;
     private status = BLOCK_STATUS.NOT_IN_USE;
     readonly shapes: BlockShape[] = [];
-    static additionalArea: Position[] = [];
+    static additionalArea: Delta[] = [];
 
     static blockFactory(character: CharacterInfo) {
         if (!character.job) throw new Error(ERROR.INVALID_CHARACTER);
@@ -32,13 +31,12 @@ export class Block {
     }
 
     protected constructor(character: CharacterInfo) {
-        this.level = Block.calcBlockLevel(character.level);
-        this.size = this.level;
+        this.size = Block.calcBlockSize(character.level);
         this.character = character;
         this.shapes = this.initShape();
     }
 
-    static calcBlockLevel(characterLevel: number) {
+    static calcBlockSize(characterLevel: number) {
         if (characterLevel < 100) return 1;
         if (characterLevel < 140) return 2;
         if (characterLevel < 200) return 3;
@@ -47,15 +45,8 @@ export class Block {
     }
 
     private initShape() {
-        const positions = (this.constructor as typeof Block).additionalArea.slice(
-            0,
-            this.level
-        );
-        return BlockShapeMap.getBlockShape(
-            this.character.job!.group!,
-            this.level,
-            positions
-        );
+        const positions = (this.constructor as typeof Block).additionalArea.slice(0, this.size);
+        return BlockShapeMap.getBlockShape(this.character.job!.group!, this.size, positions);
     }
 
     getStatus() {
@@ -72,72 +63,72 @@ export class Block {
     }
 }
 export class WarriorBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(1, 0),
-        new Position(1, 1),
-        new Position(0, 2),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 1, dx: 0 },
+        { dy: 1, dx: 1 },
+        { dy: 0, dx: 2 },
     ];
     constructor(character: CharacterInfo) {
         super(character);
     }
 }
 export class ArcherBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(0, -1),
-        new Position(0, 2),
-        new Position(0, -2),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 0, dx: -1 },
+        { dy: 0, dx: 2 },
+        { dy: 0, dx: -2 },
     ];
     constructor(character: CharacterInfo) {
         super(character);
     }
 }
 export class MageBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(0, -1),
-        new Position(1, 0),
-        new Position(-1, 0),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 0, dx: -1 },
+        { dy: 1, dx: 0 },
+        { dy: -1, dx: 0 },
     ];
     constructor(character: CharacterInfo) {
         super(character);
     }
 }
 export class RogueBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(0, -1),
-        new Position(1, 1),
-        new Position(-1, 1),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 0, dx: -1 },
+        { dy: 1, dx: 1 },
+        { dy: -1, dx: 1 },
     ];
     constructor(character: CharacterInfo) {
         super(character);
     }
 }
 export class PirateBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(1, 0),
-        new Position(-1, 1),
-        new Position(-2, 1),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 1, dx: 0 },
+        { dy: -1, dx: 1 },
+        { dy: -2, dx: 1 },
     ];
     constructor(character: CharacterInfo) {
         super(character);
     }
 }
 export class XenonBlock extends Block {
-    static additionalArea: Position[] = [
-        new Position(0, 0),
-        new Position(0, 1),
-        new Position(0, -1),
-        new Position(1, 1),
-        new Position(-1, -1),
+    static additionalArea: Delta[] = [
+        { dy: 0, dx: 0 },
+        { dy: 0, dx: 1 },
+        { dy: 0, dx: -1 },
+        { dy: 1, dx: 1 },
+        { dy: -1, dx: -1 },
     ];
     constructor(character: CharacterInfo) {
         super(character);

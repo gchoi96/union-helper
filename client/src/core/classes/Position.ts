@@ -1,3 +1,6 @@
+import { Delta } from "@core/types/Delta";
+import { getNumbersBetween } from "@core/utils";
+
 export default class Position {
     readonly y: number = 0;
     readonly x: number = 0;
@@ -29,16 +32,20 @@ export default class Position {
     }
 
     getPathBetweenPosition(target: Position): Position[] {
-        const path: Position[] = [];
-        const [dx, dy] = [target.x - this.x, target.y - this.y];
-            const stepX = dx < 0 ? 1 : -1;
-            for (let x = target.x; x !== this.x; x += stepX) {
-                path.push(new Position(target.y, x));
-            }
-            const stepY = dy < 0 ? 1 : -1;
-            for (let y = target.y; y !== this.y; y += stepY) {
-                path.push(new Position(this.x, y));
-            }
-        return path;
+        const positions: Position[] = [];
+        const isHorizontal = Math.abs(this.x - target.x) > Math.abs(this.y - target.y);
+        const [num1, num2] = isHorizontal ? [this.x, target.x] : [this.y, target.y];
+        const [min, max] = [Math.min(num1, num2), Math.max(num1, num2)];
+        for (let i = min; i <= max; i++) {
+            const newPosition = isHorizontal
+                ? new Position(this.y, i)
+                : new Position(i, this.x);
+            positions.push(newPosition);
+        }
+        return positions;
+    }
+
+    move(delta: Delta) {
+        return new Position(this.y + delta.dy, this.x + delta.dx);
     }
 }

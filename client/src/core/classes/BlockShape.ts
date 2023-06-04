@@ -1,13 +1,13 @@
-import { JOB_GROUP } from "../enums";
-import Position from "./Position";
+import { JOB_GROUP } from "@core/enums";
+import { Delta } from "../types/Delta";
 
 const blockShapeMap: { [key in JOB_GROUP]?: { [key: number]: BlockShape } } = {};
 export class BlockShapeMap {
     static readonly map: { [key in JOB_GROUP]?: { [key: number]: BlockShape[] } } = {};
-    static getBlockShape(jobGroup: JOB_GROUP, level: number, positions: Position[]) {
+    static getBlockShape(jobGroup: JOB_GROUP, level: number, shape: Delta[]) {
         const shapes = BlockShapeMap.map[jobGroup]?.[level];
         if (shapes) return shapes;
-        const newShapes = new BlockShape(positions).getAllTransformations();
+        const newShapes = new BlockShape(shape).getAllTransformations();
         BlockShapeMap.map[jobGroup] = {
             ...BlockShapeMap.map[jobGroup],
             [level]: newShapes,
@@ -16,9 +16,9 @@ export class BlockShapeMap {
     }
 }
 export class BlockShape {
-    readonly positions: Position[] = [];
-    constructor(positions: Position[]) {
-        this.positions = positions;
+    readonly deltas: Delta[] = [];
+    constructor(shape: Delta[]) {
+        this.deltas = shape;
     }
 
     getAllTransformations(): BlockShape[] {
@@ -38,23 +38,33 @@ export class BlockShape {
         return transformations;
     }
 
+    createKey() {
+        return this.deltas
+            .sort((posA, posB) => {
+                if (posA.dy === posB.dy) return posA.dx - posB.dx;
+                return posA.dy - posB.dy;
+            })
+            .map(({ dx, dy }) => `${dy}:${dx}`)
+            .join("|");
+    }
+
     private equals(target: BlockShape): boolean {
         return this.toString() === target.toString();
     }
 
     private toString(): string {
-        return this.positions.map((pos) => `${pos.x}:${pos.y}`).join("|");
+        return this.deltas.map(({ dy, dx }) => `${dy}:${dx}`).join("|");
     }
 
     private rotate(): BlockShape {
-        return new BlockShape(this.positions.map(({ y, x }) => new Position(x, -y || 0)));
+        return new BlockShape(this.deltas.map(({ dy, dx }) => ({ dy: dx, dx: -dy || 0 })));
     }
 
     private flipVertical(): BlockShape {
-        return new BlockShape(this.positions.map(({ y, x }) => new Position(-y || 0, x)));
+        return new BlockShape(this.deltas.map(({ dy, dx }) => ({ dy: -dy || 0, dx: dx })));
     }
 
     private flipHorizontal(): BlockShape {
-        return new BlockShape(this.positions.map(({ y, x }) => new Position(y, -x || 0)));
+        return new BlockShape(this.deltas.map(({ dy, dx }) => ({ dy: dy, dx: -dx || 0 })));
     }
 }

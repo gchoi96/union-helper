@@ -1,16 +1,13 @@
 import { Block } from "@/core/classes/Block";
 import BlockList from "@/core/classes/BlockList";
+import UnionManager from "@/core/classes/UnionManager";
 import { JOB_MAP } from "@/core/constants";
 import { EXTERNAL_AREA } from "@/core/enums";
 import { fetchCharacterInfo, fetchCharacterInfos } from "@/http/fetchCharacterInfo";
 import UnionBoard from "@core/classes/UnionBoard";
-import {
-    calcUnionGrade,
-    convertResponseToCharacterInfo,
-    extractCharacterList,
-} from "@core/utils";
+import { extractCharacterList } from "@core/utils";
 import { useEffect, useRef } from "react";
-const copiedText =`NEXON
+const copiedText = `NEXON
 메뉴
 메이플스토리
 메이플스토리 월드
@@ -40,39 +37,39 @@ chlrjs73123
 제한 내역
 캐릭터정보 공개설정
 Family Site회사소개채용안내이용약관게임이용등급안내개인정보처리방침청소년보호정책운영정책넥슨PC방사이트맵(주)넥슨코리아 대표이사 이정헌 경기도 성남시 분당구판교로 256번길 7 전화: 1588-7701 팩스:0502-258-8322
-E-mail:contact-us@nexon.co.kr 사업자등록번호 : 220-87-17483호 통신판매업 신고번호 : 제2013-경기성남-1659호 사업자정보확인ⓒ NEXON Korea Corporation All Rights Reserved.TOP`
-    ;
+E-mail:contact-us@nexon.co.kr 사업자등록번호 : 220-87-17483호 통신판매업 신고번호 : 제2013-경기성남-1659호 사업자정보확인ⓒ NEXON Korea Corporation All Rights Reserved.TOP`;
 export default function InitBoardTest() {
     useEffect(() => {
         (async () => {
+
+            // 캐릭터 랭킹 정보 스크래핑
             const characterList = await fetchCharacterInfos(
-                extractCharacterList(copiedText)
+                [...extractCharacterList(copiedText),]
             );
+
+            // 캐릭터 블록 목록 생성
             const blockList = new BlockList(
                 characterList.map((character) => Block.blockFactory(character))
             );
 
-            const unionBoard = new UnionBoard(blockList);
-            unionBoard.selectOccupiedAreas([EXTERNAL_AREA.보스데미지, EXTERNAL_AREA.방어율무시, EXTERNAL_AREA.버프지속시간, EXTERNAL_AREA.상태이상내성]), 
-            // 첫 번째 영역에 대해서만 중앙에 연결
-            // 두 번째 영역부턴 활성화된 영역에 대해 최소거리 계산
-            // 영역 점령 순서도 고정 -> 최소 거리 지점부터 spread
-            // 영역 저장도 배열 -> 그래프로 변경해야할 듯
-            // startPos, graph : {Pos:[Pos]}
-
-            //시작 좌표랑 임계 영역만 구해놓고
-            // 사다리꼴 범위를 지정
-            // delta를 통해 탐색하면서 사다리꼴 내부에 있는지 확인
-            // 최초 점령 영역이 아닌 경우 임계 
-            // 영역 좌표 / 이미 점령된 좌표 vs 시작 지점 / controlcells의 모든 
-            // 거리 중 최소 거리를 가지는 좌표로부터 spread로 채워나감
-            console.log(unionBoard.t_display())
-
+            const unionManager = new UnionManager(blockList);
+            unionManager.setPriority([
+                EXTERNAL_AREA.크리티컬데미지,
+                EXTERNAL_AREA.일반데미지,
+                EXTERNAL_AREA.버프지속시간
+            ])
+            unionManager.run();
+            unionManager.display();
+            // 점령 우선 순위 
+            // const unionBoard1 = new UnionBoard(blockList);
+            // unionBoard1.selectExternalAreas([
+            //     EXTERNAL_AREA.크리티컬데미지,
+            //     EXTERNAL_AREA.일반데미지,
+            //     EXTERNAL_AREA.버프지속시간
+            // ]);
+            // unionBoard1.arrangeBlocks();
+            // // console.log(unionBoard1.t_display());
         })();
-
-        fetchCharacterInfo("크확이왜모잘").then((res) =>
-            console.dir(Block.blockFactory(res))
-        );
     });
     return <div style={{ width: "100vw", height: "100vh", padding: "10%" }}></div>;
 }

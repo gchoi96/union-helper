@@ -1,5 +1,5 @@
-import { ERROR } from "../enums";
-import Position from "./Position";
+import { ERROR } from "@core/enums";
+import Position from "@core/classes/Position";
 
 export default class Trapezoid {
     private corners: Position[];

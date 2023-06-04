@@ -1,4 +1,4 @@
-import { JobInfo } from "./JobInfo";
+import { JobInfo } from "@core/types/JobInfo";
 
 export interface CharacterInfo {
     nickName: string;
