@@ -58,7 +58,7 @@ export default function InitBoardTest() {
                 EXTERNAL_AREA.일반데미지,
                 EXTERNAL_AREA.버프지속시간
             ])
-            unionManager.run();
+            unionManager.simulate();
             unionManager.display();
             // 점령 우선 순위 
             // const unionBoard1 = new UnionBoard(blockList);

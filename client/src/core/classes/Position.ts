@@ -5,6 +5,13 @@ export default class Position {
     readonly y: number = 0;
     readonly x: number = 0;
     static positions: { [key: number]: { [key: number]: Position } } = {};
+
+    static getConnectionPath(pos1: Position, pos2: Position): Position[][] {
+        const path1 = pos1.getPathBetweenPosition(pos2);
+        const path2 = pos2.getPathBetweenPosition(pos1);
+        return [path2, path1];
+    }
+
     constructor(y: number, x: number) {
         if (Position.positions[y]?.[x]) return Position.positions[y][x];
         this.y = y;

@@ -20,6 +20,7 @@ export enum ERROR {
     INVALID_CHARACTER = "Invalid character information",
     INVALID_COPIED_TEXT = "Invalid copied text",
     TRAPEZOID_CORNER_COUNT = "The number of corners in the trapezoid must be four.",
+    MISSING_BLOCK = "Missing required argument: block",
 }
 
 export enum EXTERNAL_AREA {

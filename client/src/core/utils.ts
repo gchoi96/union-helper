@@ -62,3 +62,7 @@ export const getColorSquare = (status: CELL_STATUS) => {
             return SQUARE_UNICODE.RED;
     }
 }
+
+export const removeDuplicates = <T>(array: T[]) => {
+    return Array.from(new Set(array));
+}
