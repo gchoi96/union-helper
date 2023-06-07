@@ -64,7 +64,7 @@ export default class UnionManager {
     }
 
     simulate() {
-        this.placeFirstBlock();
+        this.placeFirstBlock().forEach(el => console.log(el?.board.toString()));
     }
 
     private calcAvailableSize(blockCount: number) {
@@ -119,27 +119,31 @@ export default class UnionManager {
     }
 
     private placeFirstBlock() {
+        const controlPositions = UnionBoard.vitalControlArea.filter(
+            (pos) => this.board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED
+        );
         const blockMap = new BlockMap(this.blockList.getBlocks(this.grade.blockCount));
-        const shapeKeys = Object.keys(blockMap);
-        UnionBoard.vitalControlArea.forEach((controlPosition) => {
-            if (this.board.getCellFromPosition(controlPosition).status !== CELL_STATUS.TO_BE_OCCUPIED) return;
-            shapeKeys.forEach((key) => {
-                if (!blockMap.get(key).length) return;
-                const block = blockMap.get(key).at(-1);
-                block?.shapes.forEach((shape) => {
-                    const targetPositions = shape.deltas.map((delta) => controlPosition.move(delta));
+        return controlPositions.map((controlPos) => {
+            return blockMap.values().map((blocks, idx) => {
+                const block = blocks.at(-1);
+                if(!block) return [];
+                return block.shapes.map((shape) => {
+                    const targetPositions = shape.deltas.map((delta) => controlPos.move(delta));
                     if (!UnionBoard.isValidArea(targetPositions)) return;
+                    if (!this.board.isOccupiableArea(targetPositions)) return;
 
-                    const targetCells = targetPositions.map((position) => this.board.getCellFromPosition(position));
-                    if (!UnionBoard.isOccupiableArea(targetCells)) return;
+                    const board = this.board.copy();
+                    const copiedBlockMap = blockMap.copy();
 
-                    targetPositions.forEach((pos) => this.board.setStatus(pos, CELL_STATUS.OCCUPIED, block));
-                    blockMap.get(key).pop();
-                    const linkedPositions = targetPositions
-                        .reduce<Position[]>((acc, cur) => [...acc, ...this.board.getAdjacentPositions(cur)], [])
-                        .filter((pos) => this.board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
+                    targetPositions.forEach((pos) => board.setStatus(pos, CELL_STATUS.OCCUPIED, block));
+                    copiedBlockMap.values()[idx].pop();
+
+                    return { board, blockMap: copiedBlockMap };
+                    // const linkedPositions = targetPositions
+                    //     .reduce<Position[]>((acc, cur) => [...acc, ...board.getAdjacentPositions(cur)], [])
+                    //     .filter((pos) => board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
                 });
             });
-        });
+        }).flat(2).filter(el => el);
     }
 }

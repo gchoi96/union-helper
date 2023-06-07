@@ -17,6 +17,14 @@ export default class BlockMap {
       return this.map[key];
     }
 
+    keys(){
+      return Object.keys(this.map);
+    }
+    
+    values(){
+      return Object.values(this.map).filter(blocks => blocks.length);
+    }
+
     copy(){
       return new BlockMap(this.getAllBlocks());
     }

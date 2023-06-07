@@ -34,8 +34,8 @@ export default class UnionBoard {
         return true;
     }
 
-    static isOccupiableArea(cells: Cell[]) {
-        return cells.every((cell) => cell?.status === CELL_STATUS.TO_BE_OCCUPIED);
+    isOccupiableArea(positions: Position[]) {
+        return positions.map((position) => this.getCellFromPosition(position)).every((cell) => cell?.status === CELL_STATUS.TO_BE_OCCUPIED);
     }
 
     private getDefaultBoard(): Cell[][] {
