@@ -51,7 +51,6 @@ export default function InitBoardTest() {
             const blockList = new BlockList(
                 characterList.map((character) => Block.blockFactory(character))
             );
-
             const unionManager = new UnionManager(blockList);
             unionManager.setPriority([
                 EXTERNAL_AREA.크리티컬데미지,
@@ -60,15 +59,6 @@ export default function InitBoardTest() {
             ])
             unionManager.simulate();
             unionManager.display();
-            // 점령 우선 순위 
-            // const unionBoard1 = new UnionBoard(blockList);
-            // unionBoard1.selectExternalAreas([
-            //     EXTERNAL_AREA.크리티컬데미지,
-            //     EXTERNAL_AREA.일반데미지,
-            //     EXTERNAL_AREA.버프지속시간
-            // ]);
-            // unionBoard1.arrangeBlocks();
-            // // console.log(unionBoard1.t_display());
         })();
     });
     return <div style={{ width: "100vw", height: "100vh", padding: "10%" }}></div>;

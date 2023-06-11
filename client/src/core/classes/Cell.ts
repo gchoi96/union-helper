@@ -12,6 +12,7 @@ export default class Cell {
 
   occupy(block: Block){
     this.status = CELL_STATUS.OCCUPIED;
+    if(this.occupyingBlock) throw new Error("??")
     this.occupyingBlock = block;
   }
 

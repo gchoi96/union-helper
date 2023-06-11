@@ -721,7 +721,8 @@ export const UNION_GRADE: { [key: string]: UnionGrade } = {
 
 export const SQUARE_UNICODE = {
     RED: "\uD83D\uDFE5",
-    BLUE: "\uD83D\uDFE6",
+    BLUE: "🟣️",
+    // BLUE: "\uD83D\uDFE6",
     GREEN: "\uD83D\uDFE9",
     YELLOW: "\uD83D\uDFE8",
     ORANGE: "\uD83D\uDFE7",

@@ -48,12 +48,26 @@ export class BlockShape {
             .join("|");
     }
 
+    getDeltasByIndex(index: number) {
+        const base = this.deltas[index];
+        return this.deltas.map((delta, _index) => {
+            if (index === _index) return { dy: 0, dx: 0 };
+            return { dy: delta.dy - base.dy, dx: delta.dx - base.dx };
+        });
+    }
+
     private equals(target: BlockShape): boolean {
         return this.toString() === target.toString();
     }
 
     private toString(): string {
-        return this.deltas.map(({ dy, dx }) => `${dy}:${dx}`).join("|");
+        return this.deltas
+            .sort((a, b) => {
+                if (a.dx === b.dx) return a.dy - b.dy;
+                return a.dx - b.dx;
+            })
+            .map(({ dy, dx }) => `${dy}:${dx}`)
+            .join("|");
     }
 
     private rotate(): BlockShape {

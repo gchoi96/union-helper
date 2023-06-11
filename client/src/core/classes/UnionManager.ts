@@ -1,3 +1,4 @@
+import { Console } from "console";
 import {
     DEFAULT_AREA_HEIGHT,
     DEFAULT_AREA_WIDTH,
@@ -7,20 +8,22 @@ import {
     UNION_BOARD_WIDTH,
 } from "../constants";
 import { CELL_STATUS, EXTERNAL_AREA } from "../enums";
+import { PlaceStatus } from "../types/PlaceStatus";
 import { UnionGrade } from "../types/UnionGrade";
 import { calcUnionGrade, removeDuplicates } from "../utils";
 import { Block } from "./Block";
 import BlockList from "./BlockList";
-import BlockMap from "./BlockMap";
+import ClusteredBlockTable from "./ClusteredBlockTable";
 import Position from "./Position";
 import UnionBoard from "./UnionBoard";
 
 export default class UnionManager {
     readonly occupiableSize: number;
     readonly blockList: BlockList;
-    readonly remainingBlockCount;
+    readonly usableBlockCount;
     readonly grade: UnionGrade;
 
+    private plannedOccupiableArea: number;
     private board: UnionBoard = new UnionBoard();
 
     private _priority: EXTERNAL_AREA[] = [];
@@ -31,8 +34,9 @@ export default class UnionManager {
     constructor(blocks: Block[] | BlockList) {
         this.blockList = blocks instanceof BlockList ? blocks : new BlockList(blocks);
         this.grade = calcUnionGrade(this.blockList.getTotalLevel());
-        this.remainingBlockCount = this.grade.blockCount ?? 9;
+        this.usableBlockCount = this.grade.blockCount ?? 9;
         this.occupiableSize = this.calcAvailableSize(this.grade.blockCount);
+        this.plannedOccupiableArea = this.occupiableSize;
         this.initAreaStatus(this.grade.occupiableLevel);
     }
 
@@ -54,9 +58,11 @@ export default class UnionManager {
     setPriority(areas: EXTERNAL_AREA[]) {
         this._priority = areas;
         const positions = this.getToBeOccupiedPositions(this.priority, this.occupiableSize);
-        console.log(this.occupiableSize);
+        this.plannedOccupiableArea = positions.length;
         this.board.reset();
-        positions.forEach((pos) => this.board.setStatus(pos, CELL_STATUS.TO_BE_OCCUPIED));
+        for (let i = 0; i < positions.length; i++) {
+            this.board.setStatus(positions[i], CELL_STATUS.TO_BE_OCCUPIED);
+        }
     }
 
     getPriority() {
@@ -64,7 +70,51 @@ export default class UnionManager {
     }
 
     simulate() {
-        this.placeFirstBlock().forEach(el => console.log(el?.board.toString()));
+        let result: UnionBoard | undefined = undefined;
+        const controlPositions = UnionBoard.controlArea.filter((pos) => this.board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
+        const blockTable = new ClusteredBlockTable(this.blockList.getBlocks(this.grade.blockCount));
+        const boardsInPlacement = this.placeFirstBlock(controlPositions, blockTable);
+        const inner = (status: PlaceStatus) => {
+            if (!status.linkedPositions.length) return;
+            if (result) return;
+            const position = status.linkedPositions[status.linkedPositions.length - 1];
+            for (let bIdx = 0; bIdx < status.blockTable.table.length; bIdx++) {
+                const blocks = status.blockTable.table[bIdx];
+                const block = blocks[blocks.length - 1];
+                for (const shape of block.shapes) {
+                    const transformations = shape.deltas.map((_, dIdx) => shape.getDeltasByIndex(dIdx));
+                    for (const deltas of transformations) {
+                        const targetPositions = deltas.map((delta) => position.move(delta));
+                        if (!UnionBoard.isValidArea(targetPositions)) continue;
+                        if (!status.board.isOccupiableArea(targetPositions)) continue;
+                        status.board.occupy(block, targetPositions);
+                        const newLinkedPosition = [
+                            ...status.linkedPositions,
+                            ...targetPositions.reduce<Position[]>(
+                                (acc, cur) => [...acc, ...status.board.getAdjacentPositions(cur)],
+                                []
+                            ),
+                        ].filter((pos) => status.board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
+                        if(status.remainSize - block.size < 1){
+                            result = status.board;
+                            return;
+                        }
+                        inner({
+                            board: status.board,
+                            blockTable: status.blockTable.copy().pop(bIdx),
+                            linkedPositions: removeDuplicates(newLinkedPosition),
+                            remainSize: status.remainSize - block.size,
+                        });
+                        if(!result)
+                        status.board.removeBlock(targetPositions);
+                    }
+                }
+            }
+        };
+        for (const a of boardsInPlacement) {
+            inner(a);
+        }
+        if (result) console.log((result as UnionBoard).toString());
     }
 
     private calcAvailableSize(blockCount: number) {
@@ -118,32 +168,52 @@ export default class UnionManager {
         return positions;
     }
 
-    private placeFirstBlock() {
-        const controlPositions = UnionBoard.vitalControlArea.filter(
-            (pos) => this.board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED
-        );
-        const blockMap = new BlockMap(this.blockList.getBlocks(this.grade.blockCount));
-        return controlPositions.map((controlPos) => {
-            return blockMap.values().map((blocks, idx) => {
-                const block = blocks.at(-1);
-                if(!block) return [];
-                return block.shapes.map((shape) => {
-                    const targetPositions = shape.deltas.map((delta) => controlPos.move(delta));
-                    if (!UnionBoard.isValidArea(targetPositions)) return;
-                    if (!this.board.isOccupiableArea(targetPositions)) return;
-
-                    const board = this.board.copy();
-                    const copiedBlockMap = blockMap.copy();
-
-                    targetPositions.forEach((pos) => board.setStatus(pos, CELL_STATUS.OCCUPIED, block));
-                    copiedBlockMap.values()[idx].pop();
-
-                    return { board, blockMap: copiedBlockMap };
-                    // const linkedPositions = targetPositions
-                    //     .reduce<Position[]>((acc, cur) => [...acc, ...board.getAdjacentPositions(cur)], [])
-                    //     .filter((pos) => board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
+    private placeFirstBlock(controlPositions: Position[], blockTable: ClusteredBlockTable): PlaceStatus[] {
+        return controlPositions
+            .map((controlPos) => {
+                return blockTable.table.map((blocks, idx) => {
+                    const block = blocks.at(-1);
+                    if (!block) return [];
+                    return block.shapes.map((shape) => {
+                        const targetPositions = shape.deltas.map((delta) => controlPos.move(delta));
+                        if (!UnionBoard.isValidArea(targetPositions)) return;
+                        if (!this.board.isOccupiableArea(targetPositions)) return;
+                        const board = this.board.copy();
+                        const _blockTable = blockTable.copy();
+                        targetPositions.forEach((pos) => board.setStatus(pos, CELL_STATUS.OCCUPIED, block));
+                        _blockTable.table[idx].pop();
+                        const linkedPositions = targetPositions
+                            .reduce<Position[]>((acc, cur) => [...acc, ...board.getAdjacentPositions(cur)], [])
+                            .filter((pos) => board.getCellFromPosition(pos).status === CELL_STATUS.TO_BE_OCCUPIED);
+                        return {
+                            board,
+                            blockTable: _blockTable,
+                            linkedPositions,
+                            remainSize: this.plannedOccupiableArea - block.size,
+                        };
+                    });
                 });
-            });
-        }).flat(2).filter(el => el);
+            })
+            .flat(2)
+            .reduce<PlaceStatus[]>((acc, cur) => {
+                cur && acc.push(cur);
+                return acc;
+            }, []);
+    }
+
+    private isBlockPlacementPossible(board: UnionBoard, position: Position, blockTable: ClusteredBlockTable) {
+        const blocks = blockTable.table.map((row) => row[row.length - 1]);
+        for (const block of blocks) {
+            for (const shape of block.shapes) {
+                const transformations = shape.deltas.map((_, dIdx) => shape.getDeltasByIndex(dIdx));
+                for (const deltas of transformations) {
+                    const targetPositions = deltas.map((delta) => position.move(delta));
+                    if (!UnionBoard.isValidArea(targetPositions)) continue;
+                    if (!board.isOccupiableArea(targetPositions)) continue;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

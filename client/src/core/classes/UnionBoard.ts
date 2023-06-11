@@ -3,11 +3,11 @@ import { CELL_STATUS, ERROR, EXTERNAL_AREA } from "@core/enums";
 import { Delta } from "@core/types/Delta";
 import Position from "@core/classes/Position";
 import Cell from "./Cell";
-import { getColorSquare } from "../utils";
+import { getColorSquare, stringToUnicode } from "../utils";
 import { Block } from "./Block";
 
 export default class UnionBoard {
-    static readonly vitalControlArea: Readonly<Position[]> = Object.values({
+    static readonly controlArea: Readonly<Position[]> = Object.values({
         NW: new Position(9, 10),
         NE: new Position(9, 11),
         SW: new Position(10, 10),
@@ -29,13 +29,15 @@ export default class UnionBoard {
 
     static isValidPosition(position: Position) {
         const { y, x } = position;
-        if (y < 0 || y > UNION_BOARD_HEIGHT + 1) return false;
-        if (x < 0 || x > UNION_BOARD_WIDTH + 1) return false;
+        if (y < 0 || y > UNION_BOARD_HEIGHT - 1) return false;
+        if (x < 0 || x > UNION_BOARD_WIDTH - 1) return false;
         return true;
     }
 
     isOccupiableArea(positions: Position[]) {
-        return positions.map((position) => this.getCellFromPosition(position)).every((cell) => cell?.status === CELL_STATUS.TO_BE_OCCUPIED);
+        return positions
+            .map((position) => this.getCellFromPosition(position))
+            .every((cell) => cell?.status === CELL_STATUS.TO_BE_OCCUPIED);
     }
 
     private getDefaultBoard(): Cell[][] {
@@ -44,6 +46,18 @@ export default class UnionBoard {
         );
     }
     private board: Cell[][] = this.getDefaultBoard();
+
+    getToBeOccupiedPositions() {
+        const positions: Position[] = [];
+        for (let y = 0; y < this.board.length; y++) {
+            for (let x = 0; x < this.board[0].length; x++) {
+                const position = new Position(y, x);
+                if (this.getCellFromPosition(position).status !== CELL_STATUS.TO_BE_OCCUPIED) continue;
+                positions.push(position);
+            }
+        }
+        return positions;
+    }
 
     getCellFromPosition(position: Position) {
         return this.board[position.y][position.x];
@@ -59,7 +73,7 @@ export default class UnionBoard {
                 origin.occupyingBlock && (copy.occupyingBlock = origin.occupyingBlock);
             });
         });
-        return copiedBoard
+        return copiedBoard;
     }
 
     reset() {
@@ -86,16 +100,40 @@ export default class UnionBoard {
     }
 
     getNearestControlPosition(area: EXTERNAL_AREA, selectedBlocks: Position[]): Position {
-        const occupiedControlCells = UnionBoard.vitalControlArea.filter((position) =>
-            selectedBlocks.includes(position)
-        );
-        const targets = occupiedControlCells.length ? occupiedControlCells : UnionBoard.vitalControlArea;
+        const occupiedControlCells = UnionBoard.controlArea.filter((position) => selectedBlocks.includes(position));
+        const targets = occupiedControlCells.length ? occupiedControlCells : UnionBoard.controlArea;
         const startPos = UnionBoard.externalArea[area].startPosition;
         return startPos.getNearestPosition([...targets]);
     }
 
     toString(board = this.board) {
-        return board.map((row) => row.map((cell) => getColorSquare(cell.status)).join(" ")).join("\n");
+        return board
+            .map((row) =>
+                row
+                    .map((cell) => {
+                        if (cell.status === CELL_STATUS.OCCUPIED)
+                            return stringToUnicode(cell.occupyingBlock?.character.nickName!);
+                        return getColorSquare(cell.status);
+                    })
+                    .join(" ")
+            )
+            .join("\n");
+    }
+
+    removeBlock(positions: Position[]) {
+        positions.forEach((pos) => {
+            const cell = this.getCellFromPosition(pos);
+            cell.status = CELL_STATUS.TO_BE_OCCUPIED;
+            cell.occupyingBlock = null;
+        });
+    }
+
+    occupy(block: Block, positions: Position[]) {
+        positions.forEach((pos) => {
+            const cell = this.getCellFromPosition(pos);
+            cell.status = CELL_STATUS.OCCUPIED;
+            cell.occupy(block);
+        });
     }
 
     setStatus(pos: Position, status: CELL_STATUS, block?: Block) {

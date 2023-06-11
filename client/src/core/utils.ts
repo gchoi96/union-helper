@@ -43,12 +43,12 @@ export const stringToColorHex = (input: string) => {
         color = color & color; // 32-bit 정수로 변환
     }
     color = Math.abs(color); // 음수 제거
-    return "#" + (color.toString(16).padStart(6, "0")).toUpperCase();
+    return "#" + color.toString(16).padStart(6, "0").toUpperCase();
 };
 
 export const changeTextColor = (text: string, color: string) => {
-    return `%c${text} color: ${(stringToColorHex(color))};`
-  }
+    return `%c${text} color: ${stringToColorHex(color)};`;
+};
 
 export const getColorSquare = (status: CELL_STATUS) => {
     switch (status) {
@@ -61,8 +61,23 @@ export const getColorSquare = (status: CELL_STATUS) => {
         case CELL_STATUS.UNAVAILABLE:
             return SQUARE_UNICODE.RED;
     }
-}
+};
 
 export const removeDuplicates = <T>(array: T[]) => {
     return Array.from(new Set(array));
+};
+
+const hashStringToNumber = (str: string, maxNum: number) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash += str.charCodeAt(i);
+    }
+    return (hash % maxNum) + 1;
+};
+
+export const stringToUnicode = (str: string) => {
+    const unicode = [ '🟥', '🟧', '🟦', '🟪', '🟢', '🟠', '🟣', '🟫', '🟤', '⬛'];
+    const hash = hashStringToNumber(str, unicode.length);
+
+    return unicode[hash];
 }
