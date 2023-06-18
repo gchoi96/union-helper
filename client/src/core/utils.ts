@@ -40,9 +40,9 @@ export const stringToColorHex = (input: string) => {
     for (let i = 0; i < input.length; i++) {
         const charCode = input.charCodeAt(i);
         color = (color << 5) - color + charCode;
-        color = color & color; // 32-bit 정수로 변환
+        color = color & color;
     }
-    color = Math.abs(color); // 음수 제거
+    color = Math.abs(color);
     return "#" + color.toString(16).padStart(6, "0").toUpperCase();
 };
 
@@ -76,8 +76,30 @@ const hashStringToNumber = (str: string, maxNum: number) => {
 };
 
 export const stringToUnicode = (str: string) => {
-    const unicode = [ '🟥', '🟧', '🟦', '🟪', '🟢', '🟠', '🟣', '🟫', '🟤', '⬛'];
+    const unicode = ["🟥", "🟧", "🟦", "🟪", "🟢", "🟠", "🟣", "🟫", "🟤", "⬛"];
     const hash = hashStringToNumber(str, unicode.length);
 
     return unicode[hash];
-}
+};
+
+export const debounce = (callback: (args: any) => void, delay: number) => {
+    let debounceTimer: NodeJS.Timer;
+    return (...args: any) => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            callback.apply(this, args);
+        }, delay);
+    };
+};
+
+export const throttle = (callback: (args: any) => void, delay: number) => {
+    let throttleTimer: NodeJS.Timer | null;
+    return (...args: any) => {
+        if (!throttleTimer) {
+            throttleTimer = setTimeout(() => {
+                throttleTimer = null;
+                callback.apply(this, args);
+            }, delay);
+        }
+    };
+};

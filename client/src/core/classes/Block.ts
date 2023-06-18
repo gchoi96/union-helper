@@ -1,7 +1,7 @@
 import { BLOCK_STATUS, ERROR, JOB_GROUP } from "@core/enums";
 import { CharacterInfo } from "@core/types/CharacterInfo";
 import { BlockShape, BlockShapeMap } from "@core/classes/BlockShape";
-import { Delta } from "../types/Delta";
+import { Delta } from "@core/types/Delta";
 
 export class Block {
     readonly size: number;

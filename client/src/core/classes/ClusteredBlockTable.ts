@@ -1,4 +1,4 @@
-import { Block } from "./Block";
+import { Block } from "@core/classes/Block";
 export default class ClusteredBlockTable {
     private _table: Block[][];
     public get table(): Block[][] {

@@ -1,5 +1,5 @@
 import { JOB_GROUP } from "@core/enums";
-import { Delta } from "../types/Delta";
+import { Delta } from "@core/types/Delta";
 
 const blockShapeMap: { [key in JOB_GROUP]?: { [key: number]: BlockShape } } = {};
 export class BlockShapeMap {

@@ -1,3 +1,4 @@
+import CardButton from "@/components/Button/CardButton/CardButton";
 import { Block } from "@/core/classes/Block";
 import BlockList from "@/core/classes/BlockList";
 import UnionManager from "@/core/classes/UnionManager";
@@ -41,25 +42,24 @@ E-mail:contact-us@nexon.co.kr 사업자등록번호 : 220-87-17483호 통신판�
 export default function InitBoardTest() {
     useEffect(() => {
         (async () => {
-
             // 캐릭터 랭킹 정보 스크래핑
-            const characterList = await fetchCharacterInfos(
-                [...extractCharacterList(copiedText),]
-            );
+            const characterList = await fetchCharacterInfos([...extractCharacterList(copiedText)]);
 
             // 캐릭터 블록 목록 생성
-            const blockList = new BlockList(
-                characterList.map((character) => Block.blockFactory(character))
-            );
+            const blockList = new BlockList(characterList.map((character) => Block.blockFactory(character)));
             const unionManager = new UnionManager(blockList);
             unionManager.setPriority([
                 EXTERNAL_AREA.크리티컬데미지,
                 EXTERNAL_AREA.일반데미지,
-                EXTERNAL_AREA.버프지속시간
-            ])
+                EXTERNAL_AREA.버프지속시간,
+            ]);
             unionManager.simulate();
             unionManager.display();
         })();
     });
-    return <div style={{ width: "100vw", height: "100vh", padding: "10%" }}></div>;
+    return (
+        <div style={{ width: "100vw", height: "100vh", padding: "10%" }}>
+            <CardButton color="red" image="/plus_icon.svg" onClick={() => {}} />
+        </div>
+    );
 }

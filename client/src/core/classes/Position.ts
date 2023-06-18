@@ -1,5 +1,4 @@
 import { Delta } from "@core/types/Delta";
-import { getNumbersBetween } from "@core/utils";
 
 export default class Position {
     readonly y: number = 0;

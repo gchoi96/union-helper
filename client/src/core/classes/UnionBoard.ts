@@ -2,9 +2,9 @@ import { EXTERNAL_AREA_MAP, UNION_BOARD_HEIGHT, UNION_BOARD_WIDTH } from "@core/
 import { CELL_STATUS, ERROR, EXTERNAL_AREA } from "@core/enums";
 import { Delta } from "@core/types/Delta";
 import Position from "@core/classes/Position";
-import Cell from "./Cell";
-import { getColorSquare, stringToUnicode } from "../utils";
-import { Block } from "./Block";
+import Cell from "@core/classes/Cell";
+import { getColorSquare, stringToUnicode } from "@core/utils";
+import { Block } from "@core/classes/Block";
 
 export default class UnionBoard {
     static readonly controlArea: Readonly<Position[]> = Object.values({
@@ -34,6 +34,12 @@ export default class UnionBoard {
         return true;
     }
 
+    isPlacementPossible(positions: Position[]) {
+        if (!UnionBoard.isValidArea(positions)) return false;
+        if (!this.isOccupiableArea(positions)) return false;
+        return true;
+    }
+
     isOccupiableArea(positions: Position[]) {
         return positions
             .map((position) => this.getCellFromPosition(position))
@@ -45,12 +51,17 @@ export default class UnionBoard {
             Array.from({ length: UNION_BOARD_WIDTH }, () => new Cell())
         );
     }
-    private board: Cell[][] = this.getDefaultBoard();
+
+    private _board: Cell[][] = this.getDefaultBoard();
+
+    get board() {
+        return this._board.map((row) => [...row]);
+    }
 
     getToBeOccupiedPositions() {
         const positions: Position[] = [];
-        for (let y = 0; y < this.board.length; y++) {
-            for (let x = 0; x < this.board[0].length; x++) {
+        for (let y = 0; y < this._board.length; y++) {
+            for (let x = 0; x < this._board[0].length; x++) {
                 const position = new Position(y, x);
                 if (this.getCellFromPosition(position).status !== CELL_STATUS.TO_BE_OCCUPIED) continue;
                 positions.push(position);
@@ -60,12 +71,12 @@ export default class UnionBoard {
     }
 
     getCellFromPosition(position: Position) {
-        return this.board[position.y][position.x];
+        return this._board[position.y][position.x];
     }
     copy() {
         const copiedBoard = new UnionBoard();
-        this.board.forEach((_, y) => {
-            this.board[y].forEach((_, x) => {
+        this._board.forEach((_, y) => {
+            this._board[y].forEach((_, x) => {
                 const pos = new Position(y, x);
                 const origin = this.getCellFromPosition(pos);
                 const copy = copiedBoard.getCellFromPosition(pos);
@@ -77,7 +88,7 @@ export default class UnionBoard {
     }
 
     reset() {
-        this.board
+        this._board
             .flat()
             .filter((cell) => cell.status === CELL_STATUS.UNAVAILABLE)
             .forEach((cell) => {
@@ -106,7 +117,7 @@ export default class UnionBoard {
         return startPos.getNearestPosition([...targets]);
     }
 
-    toString(board = this.board) {
+    toString(board = this._board) {
         return board
             .map((row) =>
                 row
@@ -142,6 +153,12 @@ export default class UnionBoard {
         cell.status = status;
         status === CELL_STATUS.OCCUPIED && block && cell.occupy(block);
     }
+    
+    toggleStatus(pos: Position){
+        const cell = this.getCellFromPosition(pos);
+        if (![CELL_STATUS.TO_BE_OCCUPIED, CELL_STATUS.AVAILABLE].includes(cell.status)) return;
+        cell.status = cell.status === CELL_STATUS.AVAILABLE ? CELL_STATUS.TO_BE_OCCUPIED : CELL_STATUS.AVAILABLE;
+    }
 
     getAdjacentPositions(position: Position) {
         return UnionBoard.searchDirection
@@ -157,8 +174,8 @@ export default class UnionBoard {
     }
 
     private calcCenterPosition() {
-        const rowCount = this.board.length;
-        const colCount = this.board[0].length;
+        const rowCount = this._board.length;
+        const colCount = this._board[0].length;
         const x = colCount % 2 ? colCount / 2 : (colCount - 1) / 2;
         const y = rowCount % 2 ? rowCount / 2 : (rowCount - 1) / 2;
         return { y, x };

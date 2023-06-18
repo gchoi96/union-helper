@@ -2,7 +2,8 @@
   "scripts": {
     "server:dev": "cd server && yarn dev",
     "client:dev": "cd client && yarn dev",
-    "dev": "concurrently \"yarn server:dev\" \"yarn client:dev\"",
+    "client:storybook": "cd client && yarn storybook",
+    "dev": "concurrently \"yarn server:dev\" \"yarn client:dev\" \"yarn client:storybook\"",
     "server": "cd server && yarn start",
     "client": "cd client && yarn start",
     "start": "concurrently \"yarn server\" \"yarn client\""

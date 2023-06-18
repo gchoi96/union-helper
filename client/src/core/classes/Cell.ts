@@ -4,8 +4,10 @@ import { Block } from "./Block";
 export default class Cell {
   status: CELL_STATUS;
   occupyingBlock: Block | null = null;
-  
-  constructor(status = CELL_STATUS.UNAVAILABLE, occupyingBlock: null | Block = null) {
+  get isToBeOccupied(){
+    return this.status === CELL_STATUS.TO_BE_OCCUPIED;
+  }
+  constructor(status = CELL_STATUS.AVAILABLE, occupyingBlock: null | Block = null) {
     this.status = status;
     this.occupyingBlock = occupyingBlock;
   }
