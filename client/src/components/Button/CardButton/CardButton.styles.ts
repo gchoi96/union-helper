@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const Button = styled.button<{ color: string }>`
+export const Button = styled.button<{ color: string, size: string }>`
     display: flex;
     justify-content: center;
     align-items: center;

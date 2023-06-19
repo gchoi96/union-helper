@@ -4,13 +4,9 @@ import { CheckBox } from "./Cell.styles";
 interface CellProps {
     status: CELL_STATUS;
     handleClick: () => void;
+    size: number | string;
 }
 
 export default function Cell(props: CellProps) {
-    return (
-        <CheckBox
-            status={props.status ?? CELL_STATUS.UNAVAILABLE}
-            onClick={props.handleClick}
-        />
-    );
+    return <CheckBox size={props.size} status={props.status ?? CELL_STATUS.UNAVAILABLE} onClick={props.handleClick} />;
 }
