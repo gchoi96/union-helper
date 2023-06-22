@@ -7,7 +7,7 @@ interface CardButtonProps {
 }
 export default function CardButton(props: CardButtonProps) {
     return (
-        <Button color={props.color} onClick={props.onClick} size={props.size ?? "2rem"}>
+        <Button color={props.color} onClick={props.onClick} size={props.size}>
             <img src={props.image} />
         </Button>
     );

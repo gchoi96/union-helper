@@ -3,6 +3,7 @@ import UnionBoard from "@/core/classes/UnionBoard";
 import { UNION_BOARD_WIDTH } from "@/core/constants";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
+import { Container } from "./Board.styles";
 
 interface DragStatus {
     isDragging: boolean;
@@ -12,23 +13,10 @@ interface DragStatus {
 export default function Board() {
     const [unionBoard] = useState(new UnionBoard());
     const tableRef = useRef<HTMLTableElement>(null);
-    const [cellSize, setCellSize] = useState(45);
-
-    useEffect(() => {
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
 
     const [dragStatus, setDragStatus] = useState<DragStatus>({ isDragging: false, history: [] });
     const handleDragStart = () => setDragStatus({ isDragging: true, history: [] });
     const handleDragOver = () => setDragStatus((prev) => ({ ...prev, isDragging: false }));
-    const handleResize = () => {
-        const table = tableRef.current;
-        if (!table) return;
-        setCellSize(table.offsetWidth / UNION_BOARD_WIDTH);
-    };
     const handleDrag: MouseEventHandler<HTMLDivElement> = (e) => {
         if (!dragStatus.isDragging) return;
         const { clientX, clientY } = e;
@@ -41,25 +29,26 @@ export default function Board() {
     const toggleCellStatus = (rIdx: number, cIdx: number) => unionBoard.toggleStatus(new Position(rIdx, cIdx));
 
     return (
-        <div
+        <Container
             onMouseDown={handleDragStart}
             onMouseUp={handleDragOver}
             onMouseMove={handleDrag}
             ref={tableRef}
-            style={{ width: "100%" }}
+            width={`48.4rem`}
+            height={`44rem`}
         >
             {unionBoard.board.map((row, rIdx) => (
-                <tr key={rIdx}>
+                <div key={rIdx}>
                     {row.map((cell, cIdx) => (
                         <Cell
-                            size={cellSize}
+                            size={`2.2rem`}
                             status={cell.status}
                             key={`${rIdx}_${cIdx}`}
                             handleClick={() => toggleCellStatus(rIdx, cIdx)}
                         />
                     ))}
-                </tr>
+                </div>
             ))}
-        </div>
+        </Container>
     );
 }

@@ -1,16 +1,23 @@
-import { Icon, Text, Wrapper } from "./Label.styles";
+import { TEXT_COLOR } from "@/styles/color";
+import { P } from "./Label.styles";
 
 interface LabelProps {
-    icon?: string;
-    size?: string;
+    size?: string | number;
+    border?: { weight: string | number; color: string };
+    fontWeight?: string | number;
+    color?: string;
     children: string;
 }
-export default function Label(props: LabelProps) {
-    const size = props.size ?? "1.3rem";
+export default function Label({
+    size = "1.3rem",
+    border,
+    fontWeight = "400",
+    color = TEXT_COLOR.BLACK,
+    children,
+}: LabelProps) {
     return (
-        <Wrapper>
-            {props.icon && <Icon src={props.icon} size={size} />}
-            <Text size={size}>{props.children}</Text>
-        </Wrapper>
+        <P size={size} border={border} fontWeight={fontWeight} color={color}>
+            {children}
+        </P>
     );
 }

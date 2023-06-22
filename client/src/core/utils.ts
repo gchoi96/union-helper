@@ -103,3 +103,11 @@ export const throttle = (callback: (args: any) => void, delay: number) => {
         }
     };
 };
+
+export const getGradeFromCharacterLevel = (level: number) => {
+    if (level >= 250) return "SSS";
+    if (level >= 200) return "SS";
+    if (level >= 140) return "S";
+    if (level >= 100) return "A";
+    return "B";
+};
