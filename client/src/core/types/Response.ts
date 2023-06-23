@@ -1,5 +1,5 @@
 export interface FetchCharacterInfoResponse {
-    nickName: string;
+    nickname: string;
     level: string;
     image: string;
     job: string;

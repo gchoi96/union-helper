@@ -123,7 +123,7 @@ export default class UnionBoard {
                 row
                     .map((cell) => {
                         if (cell.status === CELL_STATUS.OCCUPIED)
-                            return stringToUnicode(cell.occupyingBlock?.character.nickName!);
+                            return stringToUnicode(cell.occupyingBlock?.character.nickname!);
                         return getColorSquare(cell.status);
                     })
                     .join(" ")

@@ -1,5 +1,5 @@
 export interface CharacterInfo {
-    nickName: string;
+    nickname: string;
     job: string;
     image: string;
     level: number;

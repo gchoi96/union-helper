@@ -57,14 +57,14 @@ describe("extractCharacterList", () => {
 describe("convertResponseToCharacterInfo", () => {
     test("서버 응답 -> CharacterInfo 타입으로 변환 : 성공한 응답", () => {
         const res: FetchCharacterInfoResponse = {
-            nickName: "진부령박스카",
+            nickname: "진부령박스카",
             level: "262",
             image: "https://이미지.com",
             job: "섀도어",
         };
 
         const info: CharacterInfo = {
-            nickName: "진부령박스카",
+            nickname: "진부령박스카",
             level: 262,
             image: "https://이미지.com",
             job: JOB_MAP.섀도어,
@@ -74,14 +74,14 @@ describe("convertResponseToCharacterInfo", () => {
     });
     test("서버 응답 -> CharacterInfo 타입으로 변환 : 실패한 응답", () => {
         const res: FetchCharacterInfoResponse = {
-            nickName: "진부령박스카",
+            nickname: "진부령박스카",
             level: "",
             image: "",
             job: "",
         };
 
         const info = {
-            nickName: "진부령박스카",
+            nickname: "진부령박스카",
             level: 0,
             image: "",
             job: undefined,

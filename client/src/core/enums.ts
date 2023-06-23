@@ -10,6 +10,12 @@ export enum CELL_STATUS {
     UNAVAILABLE,
 }
 
+export enum BUTTON_COLOR {
+    RED,
+    BLUE,
+    GREEN,
+}
+
 export enum CHECK_STATUS {
     CHECKED,
     UNCHECKED,

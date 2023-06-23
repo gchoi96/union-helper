@@ -1,8 +1,9 @@
 import { CARD_WIDTH } from "@/core/constants";
-import { BACKGROUND_COLOR, BORDER_COLOR } from "@/styles/color";
+import { BACKGROUND_COLOR, BORDER_COLOR, SHADOW_COLOR } from "@/styles/color";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "@/styles/flexOptions";
 import { border, flex } from "@/styles/mixin";
 import styled from "@emotion/styled";
+import { GradientP } from "../Label/GradientLabel/GradientLabel.styles";
 
 export const Container = styled.div`
     ${flex({ direction: FLEX_DIRECTION.COLUMN, alignItems: ALIGN_ITEMS.CENTER })}
@@ -35,4 +36,16 @@ export const CharacterImage = styled.div<{ src: string }>`
     background-size: 150%;
     background-position: -22px -46px;
     margin-bottom: 0.2rem;
+`;
+
+export const GradeLabel = styled(GradientP)`
+    position: relative;
+    :before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        text-shadow: 0rem 0.2rem 0.2rem ${SHADOW_COLOR.BLACK};
+    }
 `;

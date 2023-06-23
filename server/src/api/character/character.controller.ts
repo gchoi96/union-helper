@@ -17,14 +17,14 @@ export default class CharacterController {
     }
 
     async findOne(req: express.Request, res: express.Response) {
-        const { nickName, renew } = req.query as unknown as GetCharacterInputs;
+        const { nickname, renew } = req.query as unknown as GetCharacterInputs;
         try {
             const character = await (renew === "1"
-                ? this.service.renew(nickName)
-                : this.service.findOne(nickName));
+                ? this.service.renew(nickname)
+                : this.service.findOne(nickname));
             this.sendSuccessResponse(res, character);
         } catch (err) {
-            res.status(200).send({nickName, level: 0, image: "", job: ""});
+            res.status(200).send({nickname, level: 0, image: "", job: ""});
             console.error(err)
         }
     }

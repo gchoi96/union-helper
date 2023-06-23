@@ -13,15 +13,10 @@ export const SELECT_WORLD_CHARACTER = "월드/캐릭터";
 export const DEFAULT_OCCUPATION_LEVEL = 6;
 export const MAX_ITERATION_COUNT = 100000;
 export const CARD_PER_PAGE = 4;
-export const CARD_WIDTH = "11.6rem"
+export const CARD_WIDTH = "11.6rem";
 export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaInfo }> = {
     [EXTERNAL_AREA.크리티컬데미지]: {
-        trapezoid: new Trapezoid([
-            new Position(9, 4),
-            new Position(9, 0),
-            new Position(6, 4),
-            new Position(0, 0),
-        ]),
+        trapezoid: new Trapezoid([new Position(9, 4), new Position(9, 0), new Position(6, 4), new Position(0, 0)]),
         startPosition: new Position(9, 4),
         intersectingArea: [
             new Position(0, 0),
@@ -37,12 +32,7 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
         ],
     },
     [EXTERNAL_AREA.방어율무시]: {
-        trapezoid: new Trapezoid([
-            new Position(10, 4),
-            new Position(10, 0),
-            new Position(15, 4),
-            new Position(19, 0),
-        ]),
+        trapezoid: new Trapezoid([new Position(10, 4), new Position(10, 0), new Position(15, 4), new Position(19, 0)]),
         startPosition: new Position(10, 4),
         intersectingArea: [
             new Position(15, 4),
@@ -121,12 +111,7 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
         ],
     },
     [EXTERNAL_AREA.크리티컬확률]: {
-        trapezoid: new Trapezoid([
-            new Position(9, 17),
-            new Position(9, 21),
-            new Position(4, 17),
-            new Position(0, 21),
-        ]),
+        trapezoid: new Trapezoid([new Position(9, 17), new Position(9, 21), new Position(4, 17), new Position(0, 21)]),
         startPosition: new Position(9, 17),
         intersectingArea: [
             new Position(4, 17),
@@ -142,12 +127,7 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
         ],
     },
     [EXTERNAL_AREA.획득경험치]: {
-        trapezoid: new Trapezoid([
-            new Position(4, 11),
-            new Position(4, 16),
-            new Position(0, 11),
-            new Position(0, 20),
-        ]),
+        trapezoid: new Trapezoid([new Position(4, 11), new Position(4, 16), new Position(0, 11), new Position(0, 20)]),
         startPosition: new Position(4, 11),
         intersectingArea: [
             new Position(4, 16),
@@ -163,12 +143,7 @@ export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaI
         ],
     },
     [EXTERNAL_AREA.상태이상내성]: {
-        trapezoid: new Trapezoid([
-            new Position(4, 5),
-            new Position(4, 10),
-            new Position(0, 1),
-            new Position(0, 10),
-        ]),
+        trapezoid: new Trapezoid([new Position(4, 5), new Position(4, 10), new Position(0, 1), new Position(0, 10)]),
         startPosition: new Position(4, 10),
         intersectingArea: [
             new Position(4, 5),

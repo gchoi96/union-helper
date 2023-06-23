@@ -1,7 +1,7 @@
 import { JobInfo } from "@core/types/JobInfo";
 
 export interface CharacterInfo {
-    nickName: string;
+    nickname: string;
     job: JobInfo | undefined;
     level: number;
     image: string;

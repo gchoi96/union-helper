@@ -13,7 +13,7 @@ import {
 describe("블럭 생성", () => {
     const characterInfo = {
         level: 30,
-        nickName: "진부령박스카",
+        nickname: "진부령박스카",
         job: JOB_MAP.섀도어,
         image: "http://이미지.com",
     };
@@ -58,7 +58,7 @@ describe("블럭 생성", () => {
 describe("블럭 레벨 계산", () => {
     const characterInfo = {
         level: 30,
-        nickName: "진부령박스카",
+        nickname: "진부령박스카",
         job: JOB_MAP.섀도어,
         image: "http://이미지.com",
     };

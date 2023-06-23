@@ -4,11 +4,11 @@ import CardList from "./CardList";
 
 export default {
     component: CardList,
-    title: "CardList",
+    title: "CharacterCard/CardList",
 } as Meta<typeof CardList>;
 
 const characterInfo = {
-    nickName: "진부령박스카",
+    nickname: "진부령박스카",
     level: 265,
     job: {
         group: JOB_GROUP.도적,

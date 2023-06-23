@@ -3,31 +3,31 @@ import * as cheerio from "cheerio";
 import { SEARCH_RANKING_URL1, SEARCH_RANKING_URL2 } from "../constants";
 import { CharacterInfo } from "../types/CharacterInfo";
 import cache from "../core/cache/cache";
-const createUrl = (nickName: string, isReboot = false) =>
-    (isReboot ? SEARCH_RANKING_URL2 : SEARCH_RANKING_URL1) + nickName;
+const createUrl = (nickname: string, isReboot = false) =>
+    (isReboot ? SEARCH_RANKING_URL2 : SEARCH_RANKING_URL1) + nickname;
 export const fetchCharacterInfo = async (
-    nickName: string,
+    nickname: string,
     renew: boolean
 ): Promise<CharacterInfo | undefined> => {
-    if (!renew && cache.get(nickName)) return cache.get(nickName);
+    if (!renew && cache.get(nickname)) return cache.get(nickname);
     let characterInfo: CharacterInfo;
 
     try {
         characterInfo = extractCharacterInfoFromHTML(
-            nickName,
-            (await axios.get(createUrl(nickName))).data
+            nickname,
+            (await axios.get(createUrl(nickname))).data
         );
     } catch (err) {
         characterInfo = extractCharacterInfoFromHTML(
-            nickName,
-            (await axios.get(createUrl(nickName, true))).data
+            nickname,
+            (await axios.get(createUrl(nickname, true))).data
         );
     }
-    cache.set(nickName, characterInfo);
+    cache.set(nickname, characterInfo);
     return characterInfo;
 };
 
-const extractCharacterInfoFromHTML = (nickName: string, html: string) => {
+const extractCharacterInfoFromHTML = (nickname: string, html: string) => {
     const $ = cheerio.load(html, { decodeEntities: true });
     const $tdList = $(".search_com_chk");
     const detail = $tdList.children(".left");
@@ -41,5 +41,5 @@ const extractCharacterInfoFromHTML = (nickName: string, html: string) => {
     const level = Number(
         $tdList.children("td").first().next().next().text().split(".")[1]
     );
-    return { nickName, job, image, level };
+    return { nickname, job, image, level };
 };

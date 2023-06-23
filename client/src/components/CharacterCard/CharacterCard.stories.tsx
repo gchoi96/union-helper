@@ -3,12 +3,12 @@ import { Meta, StoryObj } from "@storybook/react";
 import CharacterCard from "./CharacterCard";
 
 export default {
-    title: "CharacterCard",
+    title: "CharacterCard/Card",
     component: CharacterCard,
 } as Meta<typeof CharacterCard>;
 
 const characterInfo = {
-    nickName: "진부령박스카",
+    nickname: "진부령박스카",
     level: 265,
     job: {
         group: JOB_GROUP.도적,
@@ -17,7 +17,7 @@ const characterInfo = {
     image: "https://avatar.maplestory.nexon.com/Character/180/NILJNCMNLEGMPOJMOCEDNJJNCJDHJCKBGHGGLFJDGMGPKEJDNMILMBKLDFCKJFGIEJBGBPHJHMOGHAEFDFENNAOLCDDMEJNHILOGHLKINNGCJPKLDHDEOANHOFNICHMJGCMKCENDJCPEPEDLCOFKOGPPBHDDPLBLEGGAKGOKHEKEPMNIMCLOPEHJFCLCHBNLMONMNELJOJDKKAJFEOLHAPPHCILLPEGHDMEHJGDOMNPEFDEMPKDMMHANIGOIIHID.png",
 };
 
-export const _CharacterCard: StoryObj<typeof CharacterCard> = {
+export const _Card: StoryObj<typeof CharacterCard> = {
     args: {
         characterInfo,
     },

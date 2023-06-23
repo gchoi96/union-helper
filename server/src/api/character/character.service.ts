@@ -2,11 +2,11 @@ import { fetchCharacterInfo } from "../../crawler/fetchCharacterInfo"
 
 export default class CharacterService {
 
-  async findOne(nickName: string) {
-    return await fetchCharacterInfo(nickName, false);
+  async findOne(nickname: string) {
+    return await fetchCharacterInfo(nickname, false);
   }
 
-  async renew(nickName: string) {
-    return await fetchCharacterInfo(nickName, true);
+  async renew(nickname: string) {
+    return await fetchCharacterInfo(nickname, true);
   }
 }

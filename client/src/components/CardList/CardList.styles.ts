@@ -13,6 +13,9 @@ export const Container = styled.div`
     ${border("0.1rem", BORDER_COLOR.GRAY, "1rem")}
     background: ${BACKGROUND_COLOR.CARD_CONTAINER};
     padding: 0.9rem 1.4rem;
+    > img {
+        cursor: pointer;
+    }
 `;
 
 export const CardWrapper = styled.div`

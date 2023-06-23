@@ -4,6 +4,7 @@ import { TEXT_COLOR } from "@/styles/color";
 import CardButtonAdd from "../CardButton/CardButtonAdd/CardButtonAdd";
 import CardButtonDelete from "../CardButton/CardButtonDelete/CardButtonDelete";
 import CardButtonRefresh from "../CardButton/CardButtonRefresh/CardButtonRefresh";
+import GradientLabel from "../Label/GradientLabel/GradientLabel";
 import Label from "../Label/Label";
 import { ButtonContainer, CharacterImage, Container, HeaderContainer } from "./CharacterCard.styles";
 
@@ -16,14 +17,15 @@ export default function CharacterCard({ characterInfo }: CharacterCardProps) {
     return (
         <Container>
             <HeaderContainer>
-                <Label
+                <GradientLabel
                     size={"2.8rem"}
                     fontWeight={600}
-                    color={TEXT_COLOR.CARD_GRADE}
+                    gradient={TEXT_COLOR.CARD_GRADE}
                     border={{ weight: "0.2rem", color: TEXT_COLOR.BLACK }}
+                    data-text={getGradeFromCharacterLevel(characterInfo.level)}
                 >
                     {getGradeFromCharacterLevel(characterInfo.level)}
-                </Label>
+                </GradientLabel>
                 <Label size={"1.2rem"} fontWeight={600} color={TEXT_COLOR.GRAY}>{`Lv.${characterInfo.level}`}</Label>
             </HeaderContainer>
             <CharacterImage src={characterInfo.image} />
@@ -31,7 +33,7 @@ export default function CharacterCard({ characterInfo }: CharacterCardProps) {
                 {characterInfo.job?.name ?? "???"}
             </Label>
             <Label size={"1.2rem"} fontWeight={600} color={TEXT_COLOR.GOLD}>
-                {characterInfo.nickName}
+                {characterInfo.nickname}
             </Label>
             <ButtonContainer>
                 <CardButtonAdd onClick={() => {}} />

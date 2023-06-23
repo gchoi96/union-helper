@@ -1,13 +1,14 @@
 import { TEXT_COLOR } from "@/styles/color";
 import { P } from "./Label.styles";
 
-interface LabelProps {
+export interface LabelProps {
     size?: string | number;
     border?: { weight: string | number; color: string };
     fontWeight?: string | number;
     color?: string;
-    children: string;
+    children: string | JSX.Element | JSX.Element[];
 }
+
 export default function Label({
     size = "1.3rem",
     border,

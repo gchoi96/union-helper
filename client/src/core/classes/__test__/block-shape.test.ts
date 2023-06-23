@@ -6,7 +6,7 @@ import { mageLv1Shapes, rogueLv4Shapes } from "./block-shape.testdata";
 describe("블럭 모양", () => {
     const characterInfo = {
         level: 250,
-        nickName: "진부령박스카",
+        nickname: "진부령박스카",
         job: JOB_MAP.섀도어,
         image: "http://이미지.com",
     };
