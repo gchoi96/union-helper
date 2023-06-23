@@ -1,3 +1,4 @@
+import { CARD_WIDTH } from "@/core/constants";
 import { BACKGROUND_COLOR, BORDER_COLOR } from "@/styles/color";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "@/styles/flexOptions";
 import { border, flex } from "@/styles/mixin";
@@ -8,6 +9,7 @@ export const Container = styled.div`
     background: ${BACKGROUND_COLOR.CHARACTER_CARD};
     ${border("0.2rem", BORDER_COLOR.DARK_ORANGE, "1rem")};
     padding: 0.8rem;
+    width: ${CARD_WIDTH};
     max-width: 11.6rem;
     max-height: 17.5rem;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

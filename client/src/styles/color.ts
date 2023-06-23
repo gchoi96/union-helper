@@ -13,10 +13,12 @@ export const CELL_COLOR = {
 export const BACKGROUND_COLOR = {
     BOARD_WRAPPER: "#222723",
     CHARACTER_CARD: "radial-gradient(96.14% 123.48% at 50% 50%, #42484C 0%, #222423 100%)",
+    CARD_CONTAINER: "#222723",
 };
 
 export const BORDER_COLOR = {
     DARK_ORANGE: "#ca8",
+    GRAY: "#777777",
 };
 
 export const BUTTON_COLOR = {

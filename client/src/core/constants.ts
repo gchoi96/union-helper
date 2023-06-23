@@ -12,6 +12,8 @@ export const DEFAULT_AREA_HEIGHT = 5;
 export const SELECT_WORLD_CHARACTER = "월드/캐릭터";
 export const DEFAULT_OCCUPATION_LEVEL = 6;
 export const MAX_ITERATION_COUNT = 100000;
+export const CARD_PER_PAGE = 4;
+export const CARD_WIDTH = "11.6rem"
 export const EXTERNAL_AREA_MAP: Readonly<{ [key in EXTERNAL_AREA]: ExternalAreaInfo }> = {
     [EXTERNAL_AREA.크리티컬데미지]: {
         trapezoid: new Trapezoid([

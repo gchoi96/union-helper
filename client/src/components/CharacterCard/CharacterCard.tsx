@@ -27,10 +27,10 @@ export default function CharacterCard({ characterInfo }: CharacterCardProps) {
                 <Label size={"1.2rem"} fontWeight={600} color={TEXT_COLOR.GRAY}>{`Lv.${characterInfo.level}`}</Label>
             </HeaderContainer>
             <CharacterImage src={characterInfo.image} />
-            <Label size={"1.2rem"} fontWeight={500} color={TEXT_COLOR.GRAY}>
+            <Label size={"1rem"} fontWeight={500} color={TEXT_COLOR.GRAY}>
                 {characterInfo.job?.name ?? "???"}
             </Label>
-            <Label size={"1rem"} fontWeight={600} color={TEXT_COLOR.GOLD}>
+            <Label size={"1.2rem"} fontWeight={600} color={TEXT_COLOR.GOLD}>
                 {characterInfo.nickName}
             </Label>
             <ButtonContainer>
