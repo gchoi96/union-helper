@@ -1,4 +1,4 @@
-import { SHADOW_COLOR } from "@/styles/color";
+import { BACKGROUND_COLOR, BORDER_COLOR, SHADOW_COLOR } from "@/styles/color";
 import { ALIGN_ITEMS, JUSTIFY_CONTENT } from "@/styles/flexOptions";
 import { flex } from "@/styles/mixin";
 import styled from "@emotion/styled";
@@ -10,8 +10,8 @@ export const ModalContainer = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 1.5rem 2rem;
-    background: #464643;
-    border: 1px solid #777777;
+    background: ${BACKGROUND_COLOR.MODAL};
+    border: 0.1rem solid ${BORDER_COLOR.GRAY};
     border-radius: 10px;
 `;
 

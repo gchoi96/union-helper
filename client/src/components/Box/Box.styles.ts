@@ -15,4 +15,11 @@ export const Container = styled.div<{ width: string; height: string }>`
     > :first-child {
         margin-bottom: 1.2rem;
     }
+    overflow: auto;
+    ::-webkit-scrollbar {
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: ${BACKGROUND_COLOR.COUNTER};
+    }
 `;

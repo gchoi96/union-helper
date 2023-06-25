@@ -1,4 +1,5 @@
 import Box from "@/components/Box/Box";
+import CharacterInfoInput from "@/components/CharacterInfoInput/CharacterInfoInput";
 import { ERROR, MESSAGE } from "@/core/enums";
 import { CharacterInfo } from "@/core/types/CharacterInfo";
 import { extractCharacterList } from "@/core/utils";
@@ -7,7 +8,7 @@ import { ClipboardEventHandler, KeyboardEventHandler, MouseEventHandler, useStat
 import Modal, { ModalProps } from "../Modal";
 import { Container, SubContainer } from "./LoadCharactersModal.styles";
 
-export default function LoadCharactersModal({ closeModal, onClickSave }: Omit<ModalProps, "children">) {
+export default function LoadCharactersModal({ closeModal }: Omit<ModalProps, "children">) {
     const [nicknames, setNicknames] = useState<string[]>([]);
     const [characterInfos, setCharacterInfos] = useState<FetchCharacterInfosResult>({
         successList: [],
@@ -15,6 +16,10 @@ export default function LoadCharactersModal({ closeModal, onClickSave }: Omit<Mo
     });
     const onKeyDownTextArea: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
         if (e.key === "Backspace") setNicknames([]);
+    };
+
+    const onClickSave = () => {
+        console.log(characterInfos);
     };
 
     const onPasteTextArea: ClipboardEventHandler<HTMLTextAreaElement> = (e) => {
@@ -28,15 +33,22 @@ export default function LoadCharactersModal({ closeModal, onClickSave }: Omit<Mo
     };
 
     const onClickLoad = async () => {
-        if(!nicknames.length){
+        if (!nicknames.length) {
             alert(MESSAGE.MISSING_CHARACTER_INPUT);
             return;
         }
-        setCharacterInfos(await fetchCharacterInfos(nicknames));
+        setCharacterInfos(await fetchCharacterInfos([...nicknames, "t.e.s.t"]));
     };
 
     const getCharacterInfoSummary = (characterInfo: CharacterInfo) => {
         return `${characterInfo.nickname} Lv.${characterInfo.level} ${characterInfo.job?.name}`;
+    };
+
+    const addCharacterInfo = (characterInfo: CharacterInfo) => {
+        setCharacterInfos((prev) => ({
+            failureList: prev.failureList.filter((info) => info.nickname !== characterInfo.nickname),
+            successList: [characterInfo, ...prev.successList],
+        }));
     };
 
     return (
@@ -49,7 +61,11 @@ export default function LoadCharactersModal({ closeModal, onClickSave }: Omit<Mo
                 <SubContainer>
                     <Box width="36rem" height="18.6rem" title="실패">
                         {characterInfos.failureList.map((characterInfo, idx) => (
-                            <p key={`fail_${idx}`}>{getCharacterInfoSummary(characterInfo)}</p>
+                            <CharacterInfoInput
+                                key={`fail_${idx}`}
+                                nickname={characterInfo.nickname}
+                                onClickAdd={addCharacterInfo}
+                            />
                         ))}
                     </Box>
                     <Box width="36rem" height="18.6rem" title="성공">

@@ -2,16 +2,16 @@ import { CharacterInfo } from "@/core/types/CharacterInfo";
 import { FetchCharacterInfoResponse } from "@/core/types/Response";
 import { convertResponseToCharacterInfo } from "@/core/utils";
 import axios, { AxiosResponse } from "axios";
-const createUrl = (nickName: string) => `http://localhost:4000/character/?nickName=${nickName}`;
+const createUrl = (nickname: string) => `http://localhost:4000/character/?nickname=${nickname}`;
 
 export interface FetchCharacterInfosResult {
     successList: CharacterInfo[];
     failureList: CharacterInfo[];
 }
 
-export const fetchCharacterInfos = async (nickNames: string[]): Promise<FetchCharacterInfosResult> => {
+export const fetchCharacterInfos = async (nicknames: string[]): Promise<FetchCharacterInfosResult> => {
     const characterInfos = await Promise.all(
-        nickNames.map((nickName) => axios.get<any, AxiosResponse<FetchCharacterInfoResponse>>(createUrl(nickName)))
+        nicknames.map((nickname) => axios.get<any, AxiosResponse<FetchCharacterInfoResponse>>(createUrl(nickname)))
     ).then((characters) => characters.map((character) => convertResponseToCharacterInfo(character.data)));
     console.log(characterInfos)
     const result: FetchCharacterInfosResult = {
@@ -26,7 +26,7 @@ export const fetchCharacterInfos = async (nickNames: string[]): Promise<FetchCha
     return result;
 };
 
-export const fetchCharacterInfo = async (nickName: string): Promise<CharacterInfo> => {
-    const { data: characterInfo } = await axios.get(createUrl(nickName));
+export const fetchCharacterInfo = async (nickname: string): Promise<CharacterInfo> => {
+    const { data: characterInfo } = await axios.get(createUrl(nickname));
     return convertResponseToCharacterInfo(characterInfo);
 };

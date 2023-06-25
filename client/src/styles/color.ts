@@ -19,6 +19,8 @@ export const BACKGROUND_COLOR = {
     CHARACTER_CARD: "radial-gradient(96.14% 123.48% at 50% 50%, #42484C 0%, #222423 100%)",
     GRADIENT_GRAY: "radial-gradient(898.17% 171.68% at 50% 50%, #222723 0%, #9c9c9c 100%)",
     COUNTER: "#333333",
+    INPUT: "#616161",
+    MODAL: "#464643",
 };
 
 export const BORDER_COLOR = {

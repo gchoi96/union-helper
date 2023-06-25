@@ -23,6 +23,9 @@ export enum CHECK_STATUS {
 
 export enum MESSAGE {
     INVALID_COPIED_TEXT = "붙여 넣은 텍스트가 올바르지 않습니다.",
+    MISSING_CHARACTER_INPUT = "입력된 캐릭터 정보가 없습니다.",
+    OUT_OF_LEVEL_RANGE = "레벨은 10에서 300 사이여야 합니다.",
+    MISSING_REQUIRED_INPUT = "입력 내용을 확인해 주세요."
 }
 
 export enum ERROR {
