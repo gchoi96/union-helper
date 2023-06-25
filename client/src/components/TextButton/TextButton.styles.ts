@@ -24,7 +24,7 @@ export const Button = styled.button<Omit<TextButtonProps, "children">>`
             case "large":
                 return "1.8rem 3rem";
             default:
-                return "0.7rem 1.4rem";
+                return "0.6rem 1.4rem";
         }
     }};
 `;

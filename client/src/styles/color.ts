@@ -12,11 +12,12 @@ export const CELL_COLOR = {
 export const SHADOW_COLOR = {
     BLACK: "rgba(0, 0, 0, 0.75)",
     CHARACTER_COUNTER: "#4f4f4f",
+    UNION_GRADE: "#DAAF37",
 };
 export const BACKGROUND_COLOR = {
-    BOARD_WRAPPER: "#222723",
+    DARK_GREEN: "#222723",
     CHARACTER_CARD: "radial-gradient(96.14% 123.48% at 50% 50%, #42484C 0%, #222423 100%)",
-    CARD_CONTAINER: "#222723",
+    GRADIENT_GRAY: "radial-gradient(898.17% 171.68% at 50% 50%, #222723 0%, #9c9c9c 100%)",
     COUNTER: "#333333",
 };
 
@@ -62,4 +63,6 @@ export const TEXT_COLOR = {
     BLACK: "#000000",
     CARD_GRADE: "linear-gradient(180deg, #FEEEDD 0%, #DBBA93 100%)",
     CONTROL_TITLE: "linear-gradient(180deg, #ffddbb 35.42%, #ccaa88 100%)",
+    COUNTER: "linear-gradient(180deg, #ffffff 45.71%, rgba(255, 255, 255, 0) 132.98%)",
+    BOX_CONTENT: "#808280",
 };

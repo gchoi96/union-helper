@@ -1,8 +1,11 @@
+import useModal from "@/hooks/useModal";
 import { TEXT_COLOR } from "@/styles/color";
+import LoadCharactersModal from "../Modal/LoadCharactersModal/LoadCharactersModal";
 import TextButton from "../TextButton/TextButton";
 import { CharacterCountWrapper, Container, SubContainer, Title } from "./CardControl.styles";
 
 export default function CardControl() {
+    const loadModal = useModal();
     const onClickAdd = () => {};
     const onClickLoad = () => {};
 
@@ -20,8 +23,11 @@ export default function CardControl() {
             </SubContainer>
             <SubContainer>
                 <TextButton onClick={onClickAdd}>캐릭터 추가하기</TextButton>
-                <TextButton onClick={onClickLoad}>캐릭터 목록 불러오기</TextButton>
+                <TextButton onClick={loadModal.openModal}>캐릭터 목록 불러오기</TextButton>
             </SubContainer>
+            {loadModal.isModalVisible && (
+                <LoadCharactersModal closeModal={loadModal.closeModal} onClickSave={() => {}} />
+            )}
         </Container>
     );
 }

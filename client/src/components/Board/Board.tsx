@@ -3,7 +3,7 @@ import UnionBoard from "@/core/classes/UnionBoard";
 import { UNION_BOARD_WIDTH } from "@/core/constants";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
-import { Container } from "./Board.styles";
+import { Container, Table } from "./Board.styles";
 
 interface DragStatus {
     isDragging: boolean;
@@ -29,26 +29,28 @@ export default function Board() {
     const toggleCellStatus = (rIdx: number, cIdx: number) => unionBoard.toggleStatus(new Position(rIdx, cIdx));
 
     return (
-        <Container
-            onMouseDown={handleDragStart}
-            onMouseUp={handleDragOver}
-            onMouseMove={handleDrag}
-            ref={tableRef}
-            width={`48.4rem`}
-            height={`44rem`}
-        >
-            {unionBoard.board.map((row, rIdx) => (
-                <div key={rIdx}>
-                    {row.map((cell, cIdx) => (
-                        <Cell
-                            size={`2.2rem`}
-                            status={cell.status}
-                            key={`${rIdx}_${cIdx}`}
-                            handleClick={() => toggleCellStatus(rIdx, cIdx)}
-                        />
-                    ))}
-                </div>
-            ))}
+        <Container>
+            <Table
+                onMouseDown={handleDragStart}
+                onMouseUp={handleDragOver}
+                onMouseMove={handleDrag}
+                ref={tableRef}
+                width={`48.4rem`}
+                height={`44rem`}
+            >
+                {unionBoard.board.map((row, rIdx) => (
+                    <div key={rIdx}>
+                        {row.map((cell, cIdx) => (
+                            <Cell
+                                size={`2.2rem`}
+                                status={cell.status}
+                                key={`${rIdx}_${cIdx}`}
+                                handleClick={() => toggleCellStatus(rIdx, cIdx)}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </Table>
         </Container>
     );
 }

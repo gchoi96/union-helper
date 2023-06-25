@@ -2,21 +2,31 @@ import { CharacterInfo } from "@/core/types/CharacterInfo";
 import { FetchCharacterInfoResponse } from "@/core/types/Response";
 import { convertResponseToCharacterInfo } from "@/core/utils";
 import axios, { AxiosResponse } from "axios";
-const createUrl = (nickname: string) =>
-    `http://localhost:4000/character/?nickname=${nickname}`;
+const createUrl = (nickName: string) => `http://localhost:4000/character/?nickName=${nickName}`;
 
-// 캐릭터마다 조회 시간 차이가 많이나는데,,, 한번에 가져오는 API를 만들어야할까?
-export const fetchCharacterInfos = (nicknames: string[]): Promise<CharacterInfo[]> => {
-    return Promise.all(
-        nicknames.map((nickname) =>
-            axios.get<any, AxiosResponse<FetchCharacterInfoResponse>>(createUrl(nickname))
-        )
-    ).then((characters) =>
-        characters.map((character) => convertResponseToCharacterInfo(character.data))
-    );
+export interface FetchCharacterInfosResult {
+    successList: CharacterInfo[];
+    failureList: CharacterInfo[];
+}
+
+export const fetchCharacterInfos = async (nickNames: string[]): Promise<FetchCharacterInfosResult> => {
+    const characterInfos = await Promise.all(
+        nickNames.map((nickName) => axios.get<any, AxiosResponse<FetchCharacterInfoResponse>>(createUrl(nickName)))
+    ).then((characters) => characters.map((character) => convertResponseToCharacterInfo(character.data)));
+    console.log(characterInfos)
+    const result: FetchCharacterInfosResult = {
+        successList: [],
+        failureList: [],
+    };
+    characterInfos.forEach((characterInfo) => {
+        if (!characterInfo.job) result.failureList.push(characterInfo);
+        else result.successList.push(characterInfo);
+    });
+
+    return result;
 };
 
-export const fetchCharacterInfo = async (nickname: string): Promise<CharacterInfo> => {
-    const { data: characterInfo } = await axios.get(createUrl(nickname));
+export const fetchCharacterInfo = async (nickName: string): Promise<CharacterInfo> => {
+    const { data: characterInfo } = await axios.get(createUrl(nickName));
     return convertResponseToCharacterInfo(characterInfo);
 };

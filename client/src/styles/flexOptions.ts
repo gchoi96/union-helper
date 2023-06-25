@@ -11,6 +11,7 @@ export const enum ALIGN_ITEMS {
     BASELINE = "baseline",
     INITIAL = "initial",
     INHERIT = "inherit",
+    SPACE_BETWEEN = "space-between",
 }
 
 export const enum JUSTIFY_CONTENT {

@@ -21,6 +21,10 @@ export enum CHECK_STATUS {
     UNCHECKED,
 }
 
+export enum MESSAGE {
+    INVALID_COPIED_TEXT = "붙여 넣은 텍스트가 올바르지 않습니다.",
+}
+
 export enum ERROR {
     BLOCK_IN_USE = "Block is already in use",
     INVALID_CHARACTER = "Invalid character information",
