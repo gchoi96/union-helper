@@ -18,6 +18,7 @@ const COLOR = {
     GRAY7: "#808280",
     GRAY8: "#8C8C8E",
     GRAY9: "#999999",
+    GRAY10: "#888888",
     TAN: "#BE9A6F",
     RED: "#C20606",
     BROWN: "#CA8",
@@ -37,6 +38,7 @@ const COLOR = {
     PINK: "#F7A8B8",
     WHITE: "#FFFFFF",
     TRANSPARENT_BLACK: "rgba(0, 0, 0, 0.75)",
+    TRANSPARENT_BLACK2: "rgba(0, 0, 0, 0.25)",
     TRANSPARENT_WHITE: "rgba(255, 255, 255, 0)",
 };
 
@@ -67,6 +69,7 @@ export const SHADOW_COLOR = {
     BLACK: COLOR.TRANSPARENT_BLACK,
     CHARACTER_COUNTER: COLOR.GRAY4,
     UNION_GRADE: COLOR.YELLOW,
+    TRANSPARENT: COLOR.TRANSPARENT_BLACK2,
 };
 
 export const BACKGROUND_COLOR = {
@@ -81,6 +84,7 @@ export const BACKGROUND_COLOR = {
 export const BORDER_COLOR = {
     DARK_ORANGE: COLOR.BROWN,
     GRAY: COLOR.SILVER,
+    CELL: COLOR.GRAY10,
 };
 
 export const CARD_BUTTON_COLOR = {
