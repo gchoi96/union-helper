@@ -1,3 +1,4 @@
+import { Button } from "#components/commons/Button";
 import { BACKGROUND_COLOR, BORDER_COLOR, CARD_BUTTON_COLOR, SHADOW_COLOR, TEXT_COLOR } from "#constants/colors";
 import { CARD_WIDTH } from "#constants/strings";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
@@ -8,8 +9,7 @@ import { Character } from "#types/character";
 import { getGradeFromCharacterLevel } from "#utils";
 import { css } from "@emotion/css";
 import { HTMLAttributes } from "react";
-import { CardButton } from "./CardButton";
-import { Txt } from "./Txt";
+import { Txt } from "#components/commons/Txt";
 
 const gradeLabelOptions = {
     size: "28px",
@@ -62,7 +62,7 @@ export function Card({ character, ...props }: Props) {
                 ${flex({ direction: FLEX_DIRECTION.COLUMN, alignItems: ALIGN_ITEMS.CENTER })}
                 background: ${BACKGROUND_COLOR.CHARACTER_CARD};
                 ${border("2px", BORDER_COLOR.DARK_ORANGE, "10px")};
-                padding: 0.8rem;
+                padding: 8px;
                 width: ${CARD_WIDTH};
                 max-width: 116px;
                 max-height: 175px;
@@ -85,7 +85,7 @@ export function Card({ character, ...props }: Props) {
                 className={css`
                     height: 85px;
                     width: 100%;
-                    background: url(${character.image || "/images/shadow_avatar.png"}) no-repeat;
+                    background: url(${character.image || "https://ssl.nexon.com/s2/game/maplestory/renewal/common/no_char_img_180.png"}) no-repeat;
                     background-size: 150%;
                     background-position: -18px -46px;
                     margin-bottom: 2px;
@@ -103,10 +103,10 @@ export function Card({ character, ...props }: Props) {
                 `}
             >
                 {character.job?.name !== JOB_NAME.메이플M && (
-                    <CardButton
+                    <Button.IconButton
                         onClick={() => (character.isUsed ? release : use)(character.nickname)}
                         {...(character.isUsed ? deleteButtonOptions : addButtonOptions)}
-                    ></CardButton>
+                    ></Button.IconButton>
                 )}
             </div>
             {character.isUsed && (
@@ -118,6 +118,7 @@ export function Card({ character, ...props }: Props) {
                         top: 26px;
                     `}
                     alt="using_icon"
+                    src="/icons/using_icon.svg"
                 />
             )}
         </div>

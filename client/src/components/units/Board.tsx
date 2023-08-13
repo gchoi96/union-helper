@@ -2,13 +2,13 @@ import { BACKGROUND_COLOR, BORDER_COLOR } from "#constants/colors";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
 import { border, flex, initSize } from "#styles/mixin";
 import { css } from "@emotion/css";
-import { Cell } from "#components/Cell";
 import useBoard from "#hooks/useBoard";
 import { useKey } from "#hooks/useKey";
 import { CELL_STATUS } from "#enums/status";
 import { MESSAGE } from "#constants/strings";
 import { MouseEventHandler, useRef, useState } from "react";
 import useCharacterList from "#hooks/useCharacterList";
+import { Cell } from "#components/units/Cell";
 
 export function Board() {
     const { generate } = useKey("cell");
@@ -53,24 +53,30 @@ export function Board() {
                 ${border("2px", BORDER_COLOR.DARK_ORANGE, "10px")};
                 background: ${BACKGROUND_COLOR.DARK_GREEN};
                 color: red;
-                ${initSize("484px", "440px")}
+                padding: 16px 47px;
             `}
             onMouseDown={onDragStart}
             onMouseUp={onDragOver}
             ref={tableRef}
         >
-            {board.map((row, rIdx) => (
-                <div>
-                    {row.map((cell, cIdx) => (
-                        <Cell
-                            key={generate()}
-                            status={cell.status}
-                            toggleCellStatus={toggleCellStatus(rIdx, cIdx)}
-                            onMouseEnter={onCellMouseEnter}
-                        />
-                    ))}
-                </div>
-            ))}
+            <div
+                className={css`
+                    ${initSize("484px", "440px")}
+                `}
+            >
+                {board.map((row, rIdx) => (
+                    <div>
+                        {row.map((cell, cIdx) => (
+                            <Cell
+                                key={generate()}
+                                status={cell.status}
+                                toggleCellStatus={toggleCellStatus(rIdx, cIdx)}
+                                onMouseEnter={onCellMouseEnter}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

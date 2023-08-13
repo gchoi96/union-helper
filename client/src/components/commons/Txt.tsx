@@ -1,4 +1,4 @@
-import { TEXT_COLOR } from "#constants/colors";
+import { SHADOW_COLOR, TEXT_COLOR } from "#constants/colors";
 import { ALIGN_ITEMS, JUSTIFY_CONTENT } from "#enums/flex";
 import { flex, textBorder } from "#styles/mixin";
 import { css } from "@emotion/css";
@@ -29,9 +29,10 @@ export function Txt({ size = "13px", border, weight = 500, color = TEXT_COLOR.BL
 
 interface GradientProps extends Omit<Props, "color"> {
     gradient: string;
+    shadow?: string;
 }
 
-Txt.GradientTxt = function ({ size, border, weight, gradient, children, ...props }: GradientProps) {
+Txt.GradientTxt = function ({ size, border, weight, gradient, children, shadow, ...props }: GradientProps) {
     return (
         <p
             className={css`
@@ -52,6 +53,7 @@ Txt.GradientTxt = function ({ size, border, weight, gradient, children, ...props
                     left: 0;
                     z-index: -1;
                     ${border && textBorder(border.weight, border.color)}
+                    text-shadow: ${shadow};
                 }
             `}
             {...props}

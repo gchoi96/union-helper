@@ -1,6 +1,6 @@
-import { BUTTON_STATUS, CELL_STATUS } from "#enums/status";
+import { BUTTON_TYPE, CELL_STATUS } from "#enums/status";
 
-const COLOR = {
+export const COLOR = {
     BLACK: "#000000",
     BLUE: "#1E8D9D",
     DARKGRAY: "#222423",
@@ -10,6 +10,7 @@ const COLOR = {
     GRAY3: "#42484C",
     DARKGRAY3: "#464643",
     BLUE2: "#4C96B2",
+    DARKGRAY4: "#333333",
     GRAY4: "#4F4F4F",
     GRAY5: "#535350",
     GRAY6: "#616161",
@@ -67,7 +68,7 @@ export const CELL_COLOR = {
 
 export const SHADOW_COLOR = {
     BLACK: COLOR.TRANSPARENT_BLACK,
-    CHARACTER_COUNTER: COLOR.GRAY4,
+    CHARACTER_COUNTER: COLOR.DARKGRAY4,
     UNION_GRADE: COLOR.YELLOW,
     TRANSPARENT: COLOR.TRANSPARENT_BLACK2,
 };
@@ -93,17 +94,17 @@ export const CARD_BUTTON_COLOR = {
 };
 
 export const TEXT_BUTTON_COLOR = {
-    [BUTTON_STATUS.BLUE]: {
+    [BUTTON_TYPE.BLUE]: {
         background: GRADIENT.TEAL,
         font: COLOR.WHITE,
         border: COLOR.TEAL2,
     },
-    [BUTTON_STATUS.RED]: {
+    [BUTTON_TYPE.RED]: {
         background: GRADIENT.RED,
         font: COLOR.WHITE,
         border: COLOR.CORAL2,
     },
-    [BUTTON_STATUS.GREEN]: {
+    [BUTTON_TYPE.GREEN]: {
         background: GRADIENT.GREEN,
         font: COLOR.WHITE,
         border: COLOR.YELLOW2,

@@ -1,4 +1,3 @@
-import { BORDER_COLOR } from "#constants/colors";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
 import { FlexOptions } from "#types/flexOptions";
 import { css } from "@emotion/react";
@@ -39,13 +38,4 @@ export const border = (width: string, color: string, radius?: string) => css`
 
 export const textBorder = (weight: string | number, color: string) => css`
     text-shadow: ${`-${weight} 0 ${color}, 0 ${weight} ${color}, ${weight} 0 ${color}, 0 -${weight} ${color}`};
-`;
-
-export const ContainerStyle = css`
-    ${flex({
-        direction: FLEX_DIRECTION.COLUMN,
-    })}
-    padding: 1.15rem 1.1rem;
-    border-radius: 1rem;
-    border: 0.1rem solid ${BORDER_COLOR.GRAY};
 `;

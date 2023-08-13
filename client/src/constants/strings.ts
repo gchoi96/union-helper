@@ -1,5 +1,5 @@
 export const SELECT_WORLD_CHARACTER = "월드/캐릭터";
-export const CARD_WIDTH = "11.6rem";
+export const CARD_WIDTH = "116px";
 
 export const MESSAGE = {
     INVALID_COPIED_TEXT: "붙여 넣은 텍스트가 올바르지 않습니다.",

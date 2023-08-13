@@ -10,7 +10,7 @@ export enum CELL_STATUS {
     UNAVAILABLE,
 }
 
-export enum BUTTON_STATUS {
+export enum BUTTON_TYPE {
     RED,
     BLUE,
     GREEN,
