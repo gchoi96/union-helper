@@ -21,6 +21,7 @@ export function Txt({ size = "13px", border, weight = 500, color = TEXT_COLOR.BL
                 font-weight: ${weight};
                 color: ${color};
             `}
+            {...props}
         >
             {children}
         </p>

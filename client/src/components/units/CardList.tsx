@@ -5,7 +5,7 @@ import useCharacterList from "#hooks/useCharacterList";
 import { useKey } from "#hooks/useKey";
 import { border, flex } from "#styles/mixin";
 import { css } from "@emotion/css";
-import { useReducer } from "react";
+import { useReducer, WheelEventHandler } from "react";
 import { Card } from "#components/units/Card";
 
 interface PageState {
@@ -48,6 +48,11 @@ export function CardList() {
         return CARD_PER_PAGE - (characterList.length % CARD_PER_PAGE);
     };
 
+    const onWheel:WheelEventHandler<HTMLDivElement> = (e) => {
+        const isUp = e.deltaY > 0;
+        dispatchPage(isUp ? PAGE_ACTION_TYPES.DECREASE : PAGE_ACTION_TYPES.INCREASE);
+    }
+
     return (
         <div
             className={css`
@@ -65,6 +70,7 @@ export function CardList() {
                     cursor: pointer;
                 }
             `}
+            onWheel={onWheel}
         >
             <img src="/icons/prev_button.svg" onClick={() => dispatchPage(PAGE_ACTION_TYPES.DECREASE)} />
             <div

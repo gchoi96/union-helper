@@ -1,20 +1,27 @@
 import { JOB_NAME } from "#enums/job";
+import { fetchCharacterInfo } from "#http/fetchCharacter";
 import { characterListState, mobileLevelState } from "#store/characterList";
 import { Character } from "#types/character";
 import { UnionGrade } from "#types/unionGrade";
 import { calcBlockSize, calcUnionGrade } from "#utils";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 
 export default function useCharacterList() {
     const [characterList, setCharacterList] = useRecoilState(characterListState);
     const [mobileState, setMobileState] = useRecoilState(mobileLevelState);
-    const resetCharacterList = useResetRecoilState(characterListState);
+
+    useEffect(() => {
+        localStorage.setItem("characters", JSON.stringify(characterList));
+    }, [characterList]);
+
     const getTotalLevel = () => {
         return characterList.reduce(
             (total, character) => (character.job?.name === JOB_NAME.메이플M ? total : total + character.level),
             0
         );
     };
+
     const getOccupiableSize = () => {
         const selectedList = characterList.filter((character) => character.isUsed);
         const remainCharacterCount = getUnionGrade().blockCount - selectedList.length;
@@ -32,6 +39,24 @@ export default function useCharacterList() {
     const getUnionGrade = (): UnionGrade => {
         const unionGrade = calcUnionGrade(getTotalLevel());
         return { ...unionGrade, blockCount: unionGrade.blockCount + (mobileState >= 30 ? 1 : 0) };
+    };
+
+    const add = (character: Character) => {
+        setCharacterList((prev) => [...prev, character]);
+    };
+
+    const _delete = (nickname: string) => {
+        setCharacterList((prev) => prev.filter((character) => character.nickname !== nickname));
+    };
+
+    const refresh = async (character: Character) => {
+        const { nickname, isUsed } = character;
+        const refreshedCharacter = await fetchCharacterInfo(character.nickname);
+        setCharacterList((prev) => [
+            ...prev.filter((character) => character.nickname !== nickname),
+            { ...refreshedCharacter, isUsed },
+        ]);
+        // setCharacterList((prev) => ({ ...prev, [nickname]: character }));
     };
 
     const use = (nickname: string) => {
@@ -53,7 +78,7 @@ export default function useCharacterList() {
     const sort = (characterList: Character[]) => [...characterList].sort((a, b) => b.level - a.level);
 
     const reset = () => {
-        resetCharacterList();
+        setCharacterList([]);
         setMobileState(0);
     };
 
@@ -67,5 +92,8 @@ export default function useCharacterList() {
         release,
         reset,
         getUnionGrade,
+        _delete,
+        refresh,
+        add,
     };
 }

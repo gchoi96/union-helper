@@ -6,12 +6,11 @@ import { border, initSize } from "#styles/mixin";
 
 interface Props extends HTMLAttributes<HTMLTableCellElement> {
     status: CELL_STATUS;
-    toggleCellStatus: () => void;
     onMouseEnter: MouseEventHandler;
     size?: string;
 }
 
-export function Cell({ size = "22px", status, toggleCellStatus, onMouseEnter, ...props }: Props) {
+export function Cell({ size = "22px", status, onMouseEnter, ...props }: Props) {
     return (
         <td
             className={css`
@@ -21,9 +20,10 @@ export function Cell({ size = "22px", status, toggleCellStatus, onMouseEnter, ..
                 background: ${CELL_COLOR[status].NORMAL};
                 :hover {
                     background: ${CELL_COLOR[status].HOVER};
-                };
+                }
                 cursor: pointer;
             `}
+            onMouseEnter={onMouseEnter}
             {...props}
         />
     );

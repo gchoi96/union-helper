@@ -3,27 +3,22 @@ import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
 import { border, flex, initSize } from "#styles/mixin";
 import { css } from "@emotion/css";
 import useBoard from "#hooks/useBoard";
-import { useKey } from "#hooks/useKey";
 import { CELL_STATUS } from "#enums/status";
 import { MESSAGE } from "#constants/strings";
-import { MouseEventHandler, useRef, useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import useCharacterList from "#hooks/useCharacterList";
 import { Cell } from "#components/units/Cell";
 
 export function Board() {
-    const { generate } = useKey("cell");
     const { board, changeCellStatus, getSelectedCount } = useBoard();
     const { getOccupiableSize } = useCharacterList();
-    const tableRef = useRef<HTMLTableElement>(null);
-    const [dragStatus, setDragStatus] = useState(false);
-    const onDragStart: MouseEventHandler = (e) => {
-        const { clientX, clientY } = e;
-        const elementAtMouse = document.elementFromPoint(clientX, clientY);
-        if (!elementAtMouse) return;
-        setDragStatus(true);
-        (elementAtMouse as HTMLTableCellElement).click();
+    const [dragStatus, setDragStatus] = useState({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
+
+    const onMouseDown = (rIdx: number, cIdx: number) => () => {
+        setDragStatus({ dragging: true, target: board[rIdx][cIdx].status });
+        toggleCellStatus(rIdx, cIdx)();
     };
-    const onDragOver = () => setDragStatus(false);
+    const onMouseUp = () => setDragStatus({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
 
     const toggleCellStatus = (rIdx: number, cIdx: number) => () => {
         const prevStatus = board[rIdx][cIdx].status;
@@ -31,16 +26,18 @@ export function Board() {
         const nextStatus = prevStatus === CELL_STATUS.AVAILABLE ? CELL_STATUS.TO_BE_OCCUPIED : CELL_STATUS.AVAILABLE;
         if (nextStatus === CELL_STATUS.TO_BE_OCCUPIED && getSelectedCount() + 1 > getOccupiableSize()) {
             alert(MESSAGE.ALREADY_SELECT_MAXIMUM_COUNT);
-            setDragStatus(false);
+            setDragStatus({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
             return;
         }
         changeCellStatus({ rIdx, cIdx, status: nextStatus });
     };
 
-    const onCellMouseEnter: MouseEventHandler<HTMLElement> = (e) => {
-        if (!dragStatus) return;
-        e.currentTarget.click();
-    };
+    const onMouseEnter =
+        (rIdx: number, cIdx: number): MouseEventHandler<HTMLElement> =>
+        () => {
+            if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
+            toggleCellStatus(rIdx, cIdx)();
+        };
 
     return (
         <div
@@ -55,23 +52,22 @@ export function Board() {
                 color: red;
                 padding: 16px 47px;
             `}
-            onMouseDown={onDragStart}
-            onMouseUp={onDragOver}
-            ref={tableRef}
         >
             <div
                 className={css`
                     ${initSize("484px", "440px")}
+                    background: url("/board_bg.png")
                 `}
             >
                 {board.map((row, rIdx) => (
                     <div>
                         {row.map((cell, cIdx) => (
                             <Cell
-                                key={generate()}
+                                key={`${rIdx}_${cIdx}`}
                                 status={cell.status}
-                                toggleCellStatus={toggleCellStatus(rIdx, cIdx)}
-                                onMouseEnter={onCellMouseEnter}
+                                onMouseDown={onMouseDown(rIdx, cIdx)}
+                                onMouseEnter={onMouseEnter(rIdx, cIdx)}
+                                onMouseUp={onMouseUp}
                             />
                         ))}
                     </div>

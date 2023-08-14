@@ -1,3 +1,4 @@
+import { AbilityList } from "#components/units/AbilityList";
 import { Board } from "#components/units/Board";
 import { CardControl } from "#components/units/CardControl";
 import { CardList } from "#components/units/CardList";
@@ -36,7 +37,7 @@ export function UnionPage() {
             </section>
             <section>
                 <MainControl />
-                {/* <RaidEffect /> */}
+                <AbilityList />
             </section>
         </div>
     );

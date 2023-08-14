@@ -1,15 +1,21 @@
 import { CELL_STATUS } from "#enums/status";
 import { Block } from "#classes/Block";
+import { EXTERNAL_AREA } from "#enums/externalArea";
 
 export default class Cell {
     public status: CELL_STATUS;
     occupyingBlock: Block | null = null;
+    private _ability: EXTERNAL_AREA | undefined;
+    get ability() {
+        return this._ability;
+    }
     get isToBeOccupied() {
         return this.status === CELL_STATUS.TO_BE_OCCUPIED;
     }
-    constructor(status = CELL_STATUS.AVAILABLE, occupyingBlock: null | Block = null) {
+    constructor(ability?: EXTERNAL_AREA, status = CELL_STATUS.AVAILABLE, occupyingBlock: null | Block = null) {
         this.status = status;
         this.occupyingBlock = occupyingBlock;
+        this._ability = ability;
     }
 
     changeStatus(status: CELL_STATUS) {
@@ -23,6 +29,6 @@ export default class Cell {
     }
 
     copy() {
-        return new Cell(this.status, this.occupyingBlock);
+        return new Cell(this._ability, this.status, this.occupyingBlock);
     }
 }

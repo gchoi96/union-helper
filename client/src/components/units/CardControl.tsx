@@ -7,12 +7,14 @@ import useMapleM from "#hooks/useMapleM";
 import useModal from "#hooks/useModal";
 import { flex } from "#styles/mixin";
 import { css } from "@emotion/css";
+import { AddCharacterModal } from "./AddCharacterModal";
 import { AddCharactersModal } from "./AddCharactersModal";
 
 export function CardControl() {
     const { getActiveCount, getUnionGrade } = useCharacterList();
     const { mobileLevel, increase, decrease } = useMapleM();
-    const loadModal = useModal();
+    const addCharactersModal = useModal();
+    const addCharacterModal = useModal();
     return (
         <div
             className={css`
@@ -94,11 +96,14 @@ export function CardControl() {
                         {"+"}
                     </Button>
                 </div>
-                <Button onClick={() => {}}>캐릭터 추가하기</Button>
-                <Button onClick={loadModal.openModal}>캐릭터 목록 불러오기</Button>
+                <Button onClick={addCharacterModal.openModal}>캐릭터 추가하기</Button>
+                <Button onClick={addCharactersModal.openModal}>캐릭터 목록 추가하기</Button>
             </div>
-            {loadModal.isModalVisible && (
-                <AddCharactersModal closeModal={loadModal.closeModal}/>
+            {addCharactersModal.isModalVisible && (
+                <AddCharactersModal closeModal={addCharactersModal.closeModal}/>
+            )}
+            {addCharacterModal.isModalVisible && (
+                <AddCharacterModal closeModal={addCharacterModal.closeModal}/>
             )}
         </div>
     );

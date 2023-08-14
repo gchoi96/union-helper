@@ -44,7 +44,7 @@ export function Box({ width, height, children, ...props }: Props) {
                 }
             `}
         >
-            {children}
+            <div>{children}</div>
         </div>
     );
 }
@@ -59,7 +59,14 @@ interface LabelProps extends HTMLAttributes<HTMLParagraphElement> {
     };
 }
 
-Box.Label = function ({ border, size = "13px", weight = 400, color = TEXT_COLOR.WHITE, children, ...props }: LabelProps) {
+Box.Label = function ({
+    border,
+    size = "13px",
+    weight = 400,
+    color = TEXT_COLOR.WHITE,
+    children,
+    ...props
+}: LabelProps) {
     return (
         <p
             className={css`

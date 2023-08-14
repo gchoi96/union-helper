@@ -14,12 +14,15 @@ const defaultMobileCharacter: Character = {
 
 const _characterListState = atom<Character[]>({
     key: "_characterList",
-    default: [],
+    default: JSON.parse(localStorage.getItem("characters") || "[]"),
 });
 
 const _mobileLevelState = atom<number>({
     key: "_mobileLevel",
-    default: 0,
+    default:
+        (JSON.parse(localStorage.getItem("characters") ?? "[]") as Character[]).find(
+            (character) => character.job?.name === JOB_NAME.메이플M
+        )?.level ?? 0,
 });
 
 const mobileLevelState = selector<number>({
@@ -52,10 +55,14 @@ const characterListState = selector<Character[]>({
     key: "characterList",
     get: ({ get }) => {
         const characterList = get(_characterListState);
-        return characterList.filter((character) => character.job?.name !== JOB_NAME.메이플M || character.level >= 30);
+        return characterList
+            .filter((character) => character.job?.name !== JOB_NAME.메이플M || character.level >= 30)
+            .sort((a, b) => {
+                if (a.level === b.level) return b.nickname > a.nickname ? -1 : 1;
+                return b.level - a.level;
+            });
     },
     set: ({ set }, newValue) => {
-        console.log(newValue as Character[]);
         set(_characterListState, newValue as Character[]);
     },
 });
