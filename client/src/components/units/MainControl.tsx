@@ -9,12 +9,23 @@ import { flex } from "#styles/mixin";
 import { css } from "@emotion/css";
 
 export function MainControl() {
-    const { getTotalLevel, getOccupiableSize, reset: resetCharacterList, getUnionGrade } = useCharacterList();
-    const { getSelectedCount, reset: resetBoard } = useBoard();
+    const {
+        getTotalLevel,
+        getOccupiableSize,
+        reset: resetCharacterList,
+        getUnionGrade,
+        autoSelect,
+    } = useCharacterList();
+    const { getSelectedCount, reset: resetBoard, simulate } = useBoard();
 
     const onClickReset = () => {
         resetCharacterList();
         resetBoard();
+    };
+
+    const onClickExec = () => {
+        autoSelect();
+        simulate();
     };
 
     return (
@@ -82,7 +93,7 @@ export function MainControl() {
                     <Button size="large" type={BUTTON_TYPE.RED} onClick={onClickReset}>
                         초기화
                     </Button>
-                    <Button size="large" type={BUTTON_TYPE.GREEN} onClick={() => {}}>
+                    <Button size="large" type={BUTTON_TYPE.GREEN} onClick={onClickExec}>
                         실행
                     </Button>
                 </div>

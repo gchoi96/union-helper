@@ -1,9 +1,10 @@
 import { ERROR } from "#constants/strings";
-import { JOB_GROUP } from "#enums/job";
+import { JOB_GROUP, JOB_NAME } from "#enums/job";
 import { BLOCK_STATUS } from "#enums/status";
 import { Character } from "#types/character";
 import { Delta } from "#types/delta";
 import { Shape, ShapeMap } from "#classes/Shape";
+import { convertMobileLevelToGeneralLevel } from "#utils";
 
 export class Block {
     readonly size: number;
@@ -37,17 +38,20 @@ export class Block {
     }
 
     protected constructor(character: Character) {
-        this.size = Block.calcBlockSize(character.level);
+        this.size = Block.calcBlockSize(character);
         this.character = character;
         this.shapes = this.initShape();
     }
 
-    static calcBlockSize(characterLevel: number) {
-        if (characterLevel < 100) return 1;
-        if (characterLevel < 140) return 2;
-        if (characterLevel < 200) return 3;
-        if (characterLevel < 250) return 4;
-        return 5;
+    static calcBlockSize(character: Character) {
+        let { level, job } = character;
+        const isMobile = job?.name === JOB_NAME.메이플M;
+        if (isMobile) level = convertMobileLevelToGeneralLevel(level);
+        if (level >= 250) return 5;
+        if (level >= 200) return 4;
+        if (level >= 140) return 3;
+        if (level >= 100) return 2;
+        return 1;
     }
 
     private initShape() {

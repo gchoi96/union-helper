@@ -1,12 +1,17 @@
-import { EXTERNAL_AREA_MAP } from "#constants/maps";
+import { Block } from "#classes/Block";
+import BlockList from "#classes/BlockList";
+import UnionBoard from "#classes/UnionBoard";
+import UnionManager from "#classes/UnionManager";
 import { EXTERNAL_AREA } from "#enums/externalArea";
 import { CELL_STATUS } from "#enums/status";
 import boardState from "#store/board";
 import { useRecoilState, useResetRecoilState } from "recoil";
+import useCharacterList from "./useCharacterList";
 
 export default function useBoard() {
     const [board, setBoard] = useRecoilState(boardState);
     const reset = useResetRecoilState(boardState);
+    const { getSelectedList } = useCharacterList();
     const changeCellStatus = ({ rIdx, cIdx, status }: { rIdx: number; cIdx: number; status: CELL_STATUS }) => {
         const newBoard = board.map((row) => row.map((cell) => cell.copy()));
         newBoard[rIdx][cIdx].changeStatus(status);
@@ -44,8 +49,16 @@ export default function useBoard() {
             .reduce<{ [key: string]: number }>((acc, cur) => {
                 acc[cur] = (acc[cur] ?? 0) + calcValuePerCell(cur);
                 return acc;
-            }, {})
+            }, {});
     };
 
-    return { board, getAbilityList, setBoard, changeCellStatus, getSelectedCount, reset };
+    const simulate = () => {
+        console.log("a")
+        const blockList = new BlockList(getSelectedList().map((character) => Block.blockFactory(character)));
+        console.log(blockList)
+        const unionManager = new UnionManager(blockList, new UnionBoard(board));
+        unionManager.simulate();
+    };
+
+    return { board, getAbilityList, setBoard, changeCellStatus, getSelectedCount, reset, simulate };
 }

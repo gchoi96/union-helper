@@ -46,7 +46,7 @@ export function AbilityList() {
                             .filter((character, idx) => character.job && character.isUsed)
                             .map((character) =>
                                 JOB_MAP[character.job?.name!].ability.toString(
-                                    character.job?.ability[getGradeFromCharacterLevel(character.level)] ?? 0
+                                    character.job?.ability[getGradeFromCharacterLevel(character)] ?? 0
                                 )
                             )
                             .sort()

@@ -1,9 +1,10 @@
+import { Block } from "#classes/Block";
 import { JOB_NAME } from "#enums/job";
 import { fetchCharacterInfo } from "#http/fetchCharacter";
 import { characterListState, mobileLevelState } from "#store/characterList";
 import { Character } from "#types/character";
 import { UnionGrade } from "#types/unionGrade";
-import { calcBlockSize, calcUnionGrade } from "#utils";
+import {  calcUnionGrade } from "#utils";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 
@@ -29,7 +30,7 @@ export default function useCharacterList() {
             .filter((character) => !character.isUsed)
             .slice(0, remainCharacterCount)
             .concat(selectedList)
-            .reduce((total, character) => total + calcBlockSize(character.level, character.isMobile), 0);
+            .reduce((total, character) => total + Block.calcBlockSize(character), 0);
     };
 
     const getActiveCount = () => {
@@ -56,7 +57,6 @@ export default function useCharacterList() {
             ...prev.filter((character) => character.nickname !== nickname),
             { ...refreshedCharacter, isUsed },
         ]);
-        // setCharacterList((prev) => ({ ...prev, [nickname]: character }));
     };
 
     const use = (nickname: string) => {
@@ -75,16 +75,29 @@ export default function useCharacterList() {
         setCharacterList(newList.sort((a, b) => b.level - a.level));
     };
 
-    const sort = (characterList: Character[]) => [...characterList].sort((a, b) => b.level - a.level);
-
     const reset = () => {
         setCharacterList([]);
         setMobileState(0);
     };
 
+    const autoSelect = () => {
+        let remainCount = getUnionGrade().blockCount - getActiveCount();
+        [...characterList].forEach((character) => {
+            if (remainCount <= 0) return;
+            if (character.isUsed) return;
+            remainCount--;
+            setCharacterList((prev) => [
+                ...prev.filter((_character) => _character.nickname !== character.nickname),
+                { ...character, isUsed: true },
+            ]);
+        });
+    };
+
+    const getSelectedList = () => characterList.filter((character) => character.isUsed);
+
     return {
         characterList,
-        setCharacterList: (characterList: Character[]) => setCharacterList(sort(characterList)),
+        setCharacterList: (characterList: Character[]) => setCharacterList(characterList),
         getTotalLevel,
         getOccupiableSize,
         getActiveCount,
@@ -95,5 +108,7 @@ export default function useCharacterList() {
         _delete,
         refresh,
         add,
+        autoSelect,
+        getSelectedList,
     };
 }

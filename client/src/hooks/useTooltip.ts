@@ -11,9 +11,14 @@ export default function useTooltip() {
             setIsTooltipVisible(false);
         };
 
-        const onMouseEnter = () => {
+        const onMouseEnter = (e: MouseEvent) => {
+            const { clientX, clientY } = e;
             setIsTooltipVisible(true);
             containerRef.current?.addEventListener("mousemove", onMouseMove);
+            setTooltipPosition({
+                x: clientX + 10,
+                y: clientY + 10,
+            });
         };
 
         const onMouseMove = (e: MouseEvent) => {

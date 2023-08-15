@@ -1,5 +1,7 @@
 import { UNION_GRADE_MAP } from "#constants/maps";
 import { ERROR, SELECT_WORLD_CHARACTER } from "#constants/strings";
+import { JOB_NAME } from "#enums/job";
+import { Character } from "#types/character";
 import { UnionGrade } from "#types/unionGrade";
 
 export const calcUnionGrade = (totalLevel: number): UnionGrade => {
@@ -60,20 +62,13 @@ export const convertMobileLevelToGeneralLevel = (level: number) => {
     return 0;
 };
 
-export const getGradeFromCharacterLevel = (level: number, isMobile = false) => {
+export const getGradeFromCharacterLevel = (character: Character) => {
+    let { level, job } = character;
+    const isMobile = job?.name === JOB_NAME.메이플M;
     if (isMobile) level = convertMobileLevelToGeneralLevel(level);
     if (level >= 250) return "SSS";
     if (level >= 200) return "SS";
     if (level >= 140) return "S";
     if (level >= 100) return "A";
     return "B";
-};
-
-export const calcBlockSize = (level: number, isMobile = false) => {
-    if (isMobile) level = convertMobileLevelToGeneralLevel(level);
-    if (level >= 250) return 5;
-    if (level >= 200) return 4;
-    if (level >= 140) return 3;
-    if (level >= 100) return 2;
-    return 1;
 };

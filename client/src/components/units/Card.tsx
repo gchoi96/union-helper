@@ -91,7 +91,7 @@ export function Card({ character, ...props }: Props) {
                     `}
                 >
                     <Txt.GradientTxt {...gradeLabelOptions} data-text={getGradeFromCharacterLevel}>
-                        {getGradeFromCharacterLevel(character.level, character.job?.name === JOB_NAME.메이플M)}
+                        {getGradeFromCharacterLevel(character)}
                     </Txt.GradientTxt>
                     <Txt {...levelLabelOptions}>{`Lv.${character.level}`}</Txt>
                 </div>
@@ -153,7 +153,7 @@ export function Card({ character, ...props }: Props) {
             {isTooltipVisible && (
                 <Tooltip position={tooltipPosition}>
                     {JOB_MAP[character.job?.name!].ability.toString(
-                        character.job?.ability[getGradeFromCharacterLevel(character.level)] ?? 0
+                        character.job?.ability[getGradeFromCharacterLevel(character)] ?? 0
                     )}
                 </Tooltip>
             )}

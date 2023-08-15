@@ -55,14 +55,14 @@ export function Board() {
         >
             <div
                 className={css`
-                    ${initSize("484px", "440px")}
-                    background: url("/board_bg.png")
+                    ${initSize("484px", "440px")};
                 `}
             >
                 {board.map((row, rIdx) => (
                     <div>
                         {row.map((cell, cIdx) => (
                             <Cell
+                                id={`${rIdx}_${cIdx}`}
                                 key={`${rIdx}_${cIdx}`}
                                 status={cell.status}
                                 onMouseDown={onMouseDown(rIdx, cIdx)}
