@@ -131,7 +131,7 @@ export default class UnionBoard {
         });
     }
 
-    occupy(block: Block, positions: Position[]) {
+    place(block: Block, positions: Position[]) {
         positions.forEach((pos) => {
             const cell = this.getCellFromPosition(pos);
             cell.status = CELL_STATUS.OCCUPIED;
@@ -213,7 +213,7 @@ export default class UnionBoard {
             row
                 .map((cell) => {
                     if (cell.status === CELL_STATUS.OCCUPIED)
-                        return stringToUnicode(cell.occupyingBlock?.character.nickname!);
+                        return stringToUnicode(cell.occupyingBlock?.character.nickname ?? "");
                     return getColorSquare(cell.status);
                 })
                 .join(" ")

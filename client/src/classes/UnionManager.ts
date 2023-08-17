@@ -1,87 +1,160 @@
-import BlockList from "#classes/BlockList";
 import UnionBoard from "#classes/UnionBoard";
 import { Block } from "#classes/Block";
 import Position from "#classes/Position";
-import { MAX_ITERATION_COUNT } from "#constants/numbers";
-import { CELL_STATUS } from "#enums/status";
 import ClusteredBlockTable from "#classes/ClusteredBlockTable";
-import WIS from "./WIS";
+import WIS from "#classes/WIS";
+import { MAX_ITERATION_COUNT } from "#constants/numbers";
 
 export default class UnionManager {
-    readonly blockList: BlockList;
-    readonly usableBlockCount;
-
+    private blockTable: ClusteredBlockTable;
     private board: UnionBoard;
 
-    constructor(blocks: Block[] | BlockList, board: UnionBoard) {
-        this.blockList = blocks instanceof BlockList ? blocks : new BlockList(blocks);
-        this.usableBlockCount = this.blockList.blocks.length;
+    constructor(blocks: Block[], board: UnionBoard) {
+        this.blockTable = new ClusteredBlockTable(blocks);
         this.board = board;
     }
 
     simulate() {
         const controlPositions = UnionBoard.controlArea.filter((p) => this.board.getCellFromPosition(p).isToBeOccupied);
-        const blockTable = new ClusteredBlockTable(this.blockList.blocks);
-        const wises = this.placeFirstBlock(controlPositions, blockTable);
+        const wises = this.placeFirstBlock(controlPositions, this.blockTable);
+        console.log(wises);
+        console.log(this.getPlacementResult(wises));
     }
 
-    private getPlacementResult(wises: WIS[]){
-        let result: UnionBoard | undefined = undefined;
+    private getPlacementResult(wises: WIS[]) {
         let iterationCount = 0;
+        let result: UnionBoard | undefined = undefined;
         const inner = (wis: WIS) => {
-            if(++iterationCount > MAX_ITERATION_COUNT) return;;
-            if (!wis.isRemainingPositions) return;
-            if (result) return;
-            const position = wis.nextPosition;
-            for (let bIdx = 0; bIdx < wis.blockTypeCount; bIdx++) {
-                const block = wis.getBlock(bIdx);
-                for (const shape of block.shapes) {
-                    const transformations = shape.deltas.map((_, dIdx) => shape.getDeltasByIndex(dIdx));
-                    for (const deltas of transformations) {
-                        const targetPositions = deltas.map((delta) => position.move(delta));
-                        if (!wis.isPlacementPossible(targetPositions)) continue;
-                        const next = wis.next(bIdx, block, targetPositions);
-                        if (next.isPlacementCompleted) result = wis.board;
-                        inner(next);
-                        if (!result) wis.board.removeBlock(targetPositions);
+            const { blockTable, board } = wis;
+            while (++iterationCount < MAX_ITERATION_COUNT && !result) {
+                let placeable = false;
+                const targetPosition = wis.targetPositions[wis.targetPositions.length - 1];
+                placeLoop: for(; blockTable.shapeIdx < blockTable.shapeCount; blockTable.shapeIdx++){
+                    const [key, shapeDetail] = Object.entries(blockTable.table)[blockTable.shapeIdx];
+                    if(shapeDetail.blockIdx >= shapeDetail.blocks.length) continue;
+                    for(;shapeDetail.deltaIdx < shapeDetail.blocks.length; shapeDetail.deltaIdx++){
+                        const deltas = shapeDetail.deltas[shapeDetail.deltaIdx];
+                        const positions = deltas.map(delta => targetPosition.move(delta));
+                        if(!wis.isPlacementPossible(positions)) continue;
+                        wis.place(key, positions, shapeDetail.deltaIdx, blockTable.shapeIdx);
+                        console.log(wis);
+                        console.log(wis.board.toString());
+                        if(!wis.targetPositions.length) result = board;
+                        placeable = true;
+                        break placeLoop;
                     }
+                    shapeDetail.deltaIdx = 0;
                 }
+                if(placeable) continue;
+                wis.revert();
+                //#region 
+                // const placeable = (() => {
+                //     // for (; wis.positionIdx < targetPositions.length; wis.positionIdx++) {
+                //         const targetPosition = targetPositions[targetPositions.length - 1];
+                //         // if (board.getCellFromPosition(targetPosition).status !== CELL_STATUS.TO_BE_OCCUPIED) continue;
+                //         for (; blockTable.shapeIdx < blockTable.shapeCount; blockTable.shapeIdx++) {
+                //             const [key, shapeDetail] = Object.entries(blockTable.table)[blockTable.shapeIdx];
+                //             if(shapeDetail.blockIdx >= shapeDetail.blocks.length) continue;
+                //             for (; shapeDetail.deltaIdx < shapeDetail.deltas.length; shapeDetail.deltaIdx++) {
+                //                 const deltas = shapeDetail.deltas[shapeDetail.deltaIdx];
+                //                 const positions = deltas.map((delta) => targetPosition.move(delta));
+                //                 if (!wis.isPlacementPossible(positions)) continue;
+                //                 wis.place(key, wis.positionIdx, positions, shapeDetail.deltaIdx, blockTable.shapeIdx);
+                //                 console.log(wis);
+                //                 console.log(wis.board.toString());
+                //                 // if (wis.isPlacementEnd) result = wis.board;
+                //                 return true;
+                //             }
+                //             shapeDetail.deltaIdx = 0;
+                //         // }
+                //         blockTable.shapeIdx = 0;
+                //         return false;
+                //     }
+                //     // for (; wis.positionIdx < targetPositions.length; wis.positionIdx++) {
+                //     //     const targetPosition = targetPositions[wis.positionIdx];
+                //     //     if (board.getCellFromPosition(targetPosition).status !== CELL_STATUS.TO_BE_OCCUPIED) continue;
+                //     //     for (; blockTable.shapeIdx < blockTable.shapeCount; blockTable.shapeIdx++) {
+                //     //         const [key, shapeDetail] = Object.entries(blockTable.table)[blockTable.shapeIdx];
+                //     //         if(shapeDetail.blockIdx >= shapeDetail.blocks.length) continue;
+                //     //         for (; shapeDetail.deltaIdx < shapeDetail.deltas.length; shapeDetail.deltaIdx++) {
+                //     //             const deltas = shapeDetail.deltas[shapeDetail.deltaIdx];
+                //     //             const positions = deltas.map((delta) => targetPosition.move(delta));
+                //     //             if (!wis.isPlacementPossible(positions)) continue;
+                //     //             wis.place(key, wis.positionIdx, positions, shapeDetail.deltaIdx, blockTable.shapeIdx);
+                //     //             console.log(wis);
+                //     //             console.log(wis.board.toString());
+                //     //             if (wis.isPlacementEnd) result = wis.board;
+                //     //             return true;
+                //     //         }
+                //     //         shapeDetail.deltaIdx = 0;
+                //     //     }
+                //     //     blockTable.shapeIdx = 0;
+                //     //     return false;
+                //     // }
+                    
+                //     //#region
+                //     // for (const targetPosition of targetPositions) {
+                //         //     if (board.getCellFromPosition(targetPosition).status !== CELL_STATUS.TO_BE_OCCUPIED) continue;
+                //         //     const map =  Object.entries(blockTable.table);
+                //     //     for(;blockTable.shapeIdx < blockTable.shapeCount; blockTable.shapeIdx++){
+                //     //         const [key ,shapeDetail] = map[blockTable.shapeIdx];
+                //     //         for (; shapeDetail.deltaIdx < shapeDetail.transformations.length; shapeDetail.deltaIdx++) {
+                //     //             const { deltas } = shapeDetail.transformations[shapeDetail.deltaIdx];
+                //     //             const positions = deltas.map((delta) => targetPosition.move(delta));
+                //     //             if (!wis.isPlacementPossible(positions)) continue;
+                //     //             wis.place(key, positions, shapeDetail.deltaIdx, 0);
+                //     //             console.log(wis.board.toString());
+                //     //             wis.isPlacementEnd && (result = wis.board);
+                //     //             return true;
+                //     //         }
+                //     //         shapeDetail.deltaIdx = 0;
+                //     // }
+                //     // for (const [key, shapeDetail] of Object.entries(blockTable.table)) {
+                //     //     for (; shapeDetail.deltaIdx < shapeDetail.transformations.length; shapeDetail.deltaIdx++) {
+                //     //         const { deltas } = shapeDetail.transformations[shapeDetail.deltaIdx];
+                //     //         const positions = deltas.map((delta) => targetPosition.move(delta));
+                //     //         if (!wis.isPlacementPossible(positions)) continue;
+                //     //         wis.place(key, positions, shapeDetail.deltaIdx, 0);
+                //     //         console.log(wis.board.toString());
+                //     //         wis.isPlacementEnd && (result = wis.board);
+                //     //         return true;
+                //     //     }
+                //     //     shapeDetail.deltaIdx = 0;
+                //     // }
+                //     //         blockTable.shapeIdx = 0;
+                //     //     }
+                //     //     return false;
+                //     //#endregion
+                // })();
+                // if (!placeable) {
+                //     wis.revert();
+                // }
+                //#endregion
             }
         };
-        wises.forEach((wis) => inner(wis));
-        return result ? result as UnionBoard : undefined;
+
+        inner(wises[0])
+        // wises.forEach(inner);
+        return result;
     }
 
-    private placeFirstBlock(controlPositions: Position[], blockTable: ClusteredBlockTable): WIS[] {
+    private placeFirstBlock(controlPositions: Position[], blockTable: ClusteredBlockTable): any[] /*WIS[]*/ {
         return controlPositions
-            .map((controlPos) => {
-                return blockTable.table.map((blocks, idx) => {
-                    const block = blocks.at(-1);
-                    if (!block) return [];
-                    return block.shapes.map((shape) => {
-                        const targetPositions = shape.deltas.map((delta) => controlPos.move(delta));
-                        if (!UnionBoard.isValidArea(targetPositions)) return;
-                        if (!this.board.isPlacementPossible(targetPositions)) return;
-                        const board = this.board.copy();
-                        const _blockTable = blockTable.copy();
-                        targetPositions.forEach((pos) => board.setStatus(pos, CELL_STATUS.OCCUPIED, block));
-                        _blockTable.table[idx].pop();
-                        const linkedPositions = targetPositions
-                            .map((pos) => board.getAdjacentPositions(pos))
-                            .flat()
-                            .filter((pos) => board.getCellFromPosition(pos).isToBeOccupied);
-                        return new WIS({
-                            board,
-                            blockTable: _blockTable,
-                            linkedPositions,
-                        });
+            .map((controlPosition) => {
+                return blockTable.getAllTransformations().map(({ key, transformations }) => {
+                    return transformations.map((shape) => {
+                        const targetPositions = shape.deltas.map((delta) => controlPosition.move(delta));
+                        if (!UnionBoard.isValidArea(targetPositions)) return undefined;
+                        if (!this.board.isPlacementPossible(targetPositions)) return undefined;
+                        const copiedBlockTable = blockTable.copy();
+                        const copiedBoard = this.board.copy();
+                        const wis =  new WIS({ board: copiedBoard, blockTable: copiedBlockTable });
+                        wis.placeFirstBLock(key, targetPositions);
+                        return wis;
                     });
                 });
             })
             .flat(2)
-            .reduce<WIS[]>((acc, cur) => {
-                cur && acc.push(cur);
-                return acc;
-            }, []);
+            .filter((wis) => wis);
     }
 }

@@ -40,7 +40,7 @@ export class Block {
     protected constructor(character: Character) {
         this.size = Block.calcBlockSize(character);
         this.character = character;
-        this.shapes = this.initShape();
+        this.shapes = this.initShapes();
     }
 
     static calcBlockSize(character: Character) {
@@ -54,7 +54,7 @@ export class Block {
         return 1;
     }
 
-    private initShape() {
+    private initShapes() {
         const positions = (this.constructor as typeof Block).additionalArea.slice(0, this.size);
         return ShapeMap.getBlockShape(this.character.job!.group!, this.size, positions);
     }
