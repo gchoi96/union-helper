@@ -59,17 +59,26 @@ export class Block {
         return ShapeMap.getBlockShape(this.character.job!.group!, this.size, positions);
     }
 
-    getStatus() {
-        return this._status;
-    }
-
-    use() {
-        if (this._status) throw new Error(ERROR.BLOCK_IN_USE);
-        this._status = BLOCK_STATUS.IN_USE;
-    }
-
-    release() {
-        this._status = BLOCK_STATUS.NOT_IN_USE;
+    getAllTransformations() {
+        return Object.values(
+            this.shapes
+                .map((shape) => {
+                    return shape.deltas.map((_, idx) => shape.getDeltasByIndex(idx));
+                })
+                .flat()
+                .reduce((map, deltas) => {
+                    const key = deltas
+                        .sort((posA, posB) => {
+                            if (posA.dy === posB.dy) return posA.dx - posB.dx;
+                            return posA.dy - posB.dy;
+                        })
+                        .map(({ dx, dy }) => `${dy}:${dx}`)
+                        .join("|");
+                    if (map[key]) return map;
+                    map[key] = deltas;
+                    return map;
+                }, {} as { [key: string]: Delta[] })
+        );
     }
 }
 export class WarriorBlock extends Block {

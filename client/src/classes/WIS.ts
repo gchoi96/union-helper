@@ -2,21 +2,24 @@ import { CELL_STATUS } from "#enums/status";
 import ClusteredBlockTable from "#classes/ClusteredBlockTable";
 import Position from "#classes/Position";
 import UnionBoard from "#classes/UnionBoard";
+import { ShapeDetail } from "#types/ShapeDetail";
 
 interface WISInput {
     board: UnionBoard;
     blockTable: ClusteredBlockTable;
 }
+interface WISHistory {
+    basePosition: Position;
+    placedPositions: Position[];
+    deltaIdx: number;
+    shapeIdx: number;
+}
 export default class WIS {
     board: UnionBoard;
-    blockTable: ClusteredBlockTable;
-    targetPositions: Position[] = [];
-    positionIdx = 0;
-    private history: { key: string; positionIdx: number; shapeIdx: number; deltaIdx: number; positions: Position[] }[] = [];
-
-    get isPlacementEnd() {
-        return this.history.length === this.blockTable.length;
-    }
+    private blockTable: ClusteredBlockTable;
+    private targetPositions: Position[] = [];
+    private basePosition: Position | undefined;
+    private history: WISHistory[] = [];
 
     constructor(wis: WISInput) {
         this.board = wis.board;
@@ -27,23 +30,67 @@ export default class WIS {
                     cell.status === CELL_STATUS.TO_BE_OCCUPIED && this.targetPositions.push(new Position(rIdx, cIdx))
             )
         );
+        this.basePosition = this.getNextBasePosition();
     }
 
-    placeFirstBLock(key: string, positions: Position[]) {
-        const block = this.blockTable.shift(key);
+    placeFirstBLock(shapeIdx: number, positions: Position[]) {
+        const block = this.blockTable.shift(shapeIdx);
         this.board.place(block, positions);
-        this.blockTable.table[key].blocks = this.blockTable.table[key].blocks.filter((_block) => _block !== block)
-        this.blockTable.table[key].blockIdx = 0;
-        this.blockTable.length = this.blockTable.table[key].blocks.length;
+        this.blockTable.table[shapeIdx].blocks = this.blockTable.table[shapeIdx].blocks.filter(
+            (_block) => _block !== block
+        );
+        this.blockTable.table[shapeIdx].blockIdx = 0;
         this.blockTable.shapeIdx = 0;
     }
 
-    isPlacementPossible(positions: Position[]) {
-        if (!UnionBoard.isValidArea(positions)) return false;
-        if (!this.board.isOccupiableArea(positions)) return false;
-        return true;
+    private getNextBasePosition(): Position | undefined {
+        return this.targetPositions.find((position) => this.board.getCellFromPosition(position).isToBeOccupied);
     }
 
-    revert(){}
-    place(){}
+    next() {
+        if (!this.basePosition) return true;
+
+        for (; this.blockTable.shapeIdx < this.blockTable.shapeCount; this.blockTable.shapeIdx++) {
+            const shapeDetail = this.blockTable.table[this.blockTable.shapeIdx];
+            if (shapeDetail.blockIdx >= shapeDetail.blocks.length) continue;
+            for (; shapeDetail.deltaIdx < shapeDetail.deltas.length; shapeDetail.deltaIdx++) {
+                const placedPositions = shapeDetail.deltas[shapeDetail.deltaIdx].map(
+                    (delta) => this.basePosition?.move(delta)!
+                );
+                if (!this.board.isPlacementPossible(placedPositions)) continue;
+                return this.place(this.basePosition, placedPositions, shapeDetail);
+            }
+            shapeDetail.deltaIdx = 0;
+        }
+        if (!this.history.length) return false;
+
+        this.revert();
+        return false;
+    }
+
+    private revert() {
+        const prev = this.history.pop();
+        if (!prev) return;
+        this.board.removeBlock(prev.placedPositions);
+        this.blockTable.table[prev.shapeIdx].blockIdx--;
+        this.blockTable.table[prev.shapeIdx].deltaIdx = prev.deltaIdx + 1;
+        this.blockTable.shapeIdx = prev.shapeIdx;
+        this.basePosition = prev.basePosition;
+    }
+
+    private place(basePosition: Position, placedPositions: Position[], shapeDetail: ShapeDetail) {
+        this.history.push({
+            placedPositions,
+            shapeIdx: this.blockTable.shapeIdx,
+            basePosition: basePosition,
+            deltaIdx: shapeDetail.deltaIdx,
+        });
+        const block = shapeDetail.blocks[shapeDetail.blockIdx];
+        shapeDetail.blockIdx++;
+        shapeDetail.deltaIdx = 0;
+        this.blockTable.shapeIdx = 0;
+        this.board.place(block, placedPositions);
+        this.basePosition = this.getNextBasePosition();
+        return this.basePosition ? false : true;
+    }
 }
