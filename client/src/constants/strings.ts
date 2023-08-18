@@ -16,3 +16,5 @@ export const ERROR = {
     TRAPEZOID_CORNER_COUNT: "The number of corners in the trapezoid must be four.",
     MISSING_BLOCK: "Missing required argument: block",
 };
+
+export const NO_CHAR_IMAGE = "https://ssl.nexon.com/s2/game/maplestory/renewal/common/no_char_img_180.png";

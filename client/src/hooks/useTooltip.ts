@@ -33,12 +33,5 @@ export default function useTooltip() {
         containerRef.current.addEventListener("mouseleave", onMouseLeave);
     }, [containerRef]);
 
-    const showTooltip = () => {
-        setIsTooltipVisible(true);
-    };
-
-    const hideTooltip = () => {
-        setIsTooltipVisible(false);
-    };
-    return { isTooltipVisible, showTooltip, hideTooltip, containerRef, tooltipPosition };
+    return { isTooltipVisible, containerRef, tooltipPosition };
 }
