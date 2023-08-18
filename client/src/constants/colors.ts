@@ -1,3 +1,4 @@
+import { JOB_GROUP } from "#enums/job";
 import { BUTTON_TYPE, CELL_STATUS } from "#enums/status";
 
 export const COLOR = {
@@ -63,7 +64,14 @@ export const CELL_COLOR = {
         NORMAL: GRADIENT.BEIGE,
         HOVER: GRADIENT.BROWN,
     },
-    [CELL_STATUS.OCCUPIED]: { NORMAL: COLOR.TEAL, HOVER: "" },
+    [CELL_STATUS.OCCUPIED]: {
+        [JOB_GROUP.도적]: { NORMAL: "#8A58D3", HOVER: "#6C4ACB" },
+        [JOB_GROUP.궁수]: { NORMAL: "#A2C451", HOVER: "#6F9839" },
+        [JOB_GROUP.전사]: { NORMAL: "#C5375C", HOVER: "#AA214D" },
+        [JOB_GROUP.해적]: { NORMAL: "#8B867F", HOVER: "#6F7274" },
+        [JOB_GROUP.마법사]: { NORMAL: "#93C4D4", HOVER: "#2C92A4" },
+        [JOB_GROUP.제논]: { NORMAL: COLOR.PALE, HOVER: COLOR.TAN2 },
+    },
 };
 
 export const SHADOW_COLOR = {

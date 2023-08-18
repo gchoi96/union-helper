@@ -18,7 +18,7 @@ export default class UnionManager {
         const controlPositions = UnionBoard.controlArea.filter((p) => this.board.getCellFromPosition(p).isToBeOccupied);
         const wises = this.placeFirstBlock(controlPositions, this.blockTable);
         const result = this.getPlacementResult(wises);
-        return result
+        return result;
     }
 
     private getPlacementResult(wises: WIS[]) {
@@ -27,20 +27,23 @@ export default class UnionManager {
             let iterationCount = 0;
             while (++iterationCount < MAX_ITERATION_COUNT) {
                 const success = wis.next();
-                if(!success) continue;
+                if (!success) continue;
                 result = wis.board;
                 break;
-            };
-        }
+            }
+        };
         wises.forEach(inner);
-        console.log(result ? (result as UnionBoard).toString() : "");
-        return result;
+        if (!result) return undefined;
+        result = result as UnionBoard;
+        result.updateCSSProperties();
+        result.setGroup();
+        return (result as UnionBoard).board;
     }
 
     private placeFirstBlock(controlPositions: Position[], blockTable: ClusteredBlockTable): any[] /*WIS[]*/ {
         return controlPositions
             .map((controlPosition) => {
-                return blockTable.getAllTransformations().map(({transformations }, shapeIdx) => {
+                return blockTable.getAllTransformations().map(({ transformations }, shapeIdx) => {
                     return transformations.map((shape) => {
                         const targetPositions = shape.deltas.map((delta) => controlPosition.move(delta));
                         if (!UnionBoard.isValidArea(targetPositions)) return undefined;

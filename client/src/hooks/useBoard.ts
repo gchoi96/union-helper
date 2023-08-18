@@ -1,4 +1,5 @@
 import { Block } from "#classes/Block";
+import Cell from "#classes/Cell";
 import UnionBoard from "#classes/UnionBoard";
 import UnionManager from "#classes/UnionManager";
 import { EXTERNAL_AREA } from "#enums/externalArea";
@@ -51,10 +52,17 @@ export default function useBoard() {
             }, {});
     };
 
-    const simulate = () => {
-        const unionManager = new UnionManager(getSelectedList().map((character) => Block.blockFactory(character)), new UnionBoard(board));
-        unionManager.simulate();
+    const updateBoard = (board: Cell[][]) => {
+        setBoard(board);
     };
 
-    return { board, getAbilityList, setBoard, changeCellStatus, getSelectedCount, reset, simulate };
+    const simulate = () => {
+        const unionManager = new UnionManager(
+            getSelectedList().map((character) => Block.blockFactory(character)),
+            new UnionBoard(board)
+        );
+        return unionManager.simulate();
+    };
+
+    return { board, getAbilityList, setBoard, changeCellStatus, getSelectedCount, reset, simulate, updateBoard };
 }

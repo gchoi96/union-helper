@@ -1,11 +1,16 @@
 import { CELL_STATUS } from "#enums/status";
 import { Block } from "#classes/Block";
 import { EXTERNAL_AREA } from "#enums/externalArea";
+import { CSSProperties } from "react";
+import Position from "#classes/Position";
 
 export default class Cell {
     public status: CELL_STATUS;
     occupyingBlock: Block | null = null;
     private _ability: EXTERNAL_AREA | undefined;
+    public group:Position[] = []
+    public css: CSSProperties | undefined;
+
     get ability() {
         return this._ability;
     }

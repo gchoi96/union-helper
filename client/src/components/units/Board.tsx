@@ -5,15 +5,19 @@ import { css } from "@emotion/css";
 import useBoard from "#hooks/useBoard";
 import { CELL_STATUS } from "#enums/status";
 import { MESSAGE } from "#constants/strings";
-import { MouseEventHandler, useState } from "react";
+import { useState } from "react";
 import useCharacterList from "#hooks/useCharacterList";
 import { Cell } from "#components/units/Cell";
+import { Block } from "#classes/Block";
+import useTooltip from "#hooks/useTooltip";
+import { Tooltip } from "#components/commons/Tooltip";
 
 export function Board() {
     const { board, changeCellStatus, getSelectedCount } = useBoard();
     const { getOccupiableSize } = useCharacterList();
     const [dragStatus, setDragStatus] = useState({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
-
+    const [hoveredBlock, setHoveredBlock] = useState<Block | null>(null);
+    const { isTooltipVisible, showTooltip, hideTooltip, containerRef, tooltipPosition } = useTooltip();
     const onMouseDown = (rIdx: number, cIdx: number) => () => {
         setDragStatus({ dragging: true, target: board[rIdx][cIdx].status });
         toggleCellStatus(rIdx, cIdx)();
@@ -32,12 +36,13 @@ export function Board() {
         changeCellStatus({ rIdx, cIdx, status: nextStatus });
     };
 
-    const onMouseEnter =
-        (rIdx: number, cIdx: number): MouseEventHandler<HTMLElement> =>
-        () => {
-            if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
-            toggleCellStatus(rIdx, cIdx)();
-        };
+    const onMouseEnter = (rIdx: number, cIdx: number) => {
+        if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
+        toggleCellStatus(rIdx, cIdx)();
+    };
+    const onHover = (rIdx: number, cIdx: number) => {
+        setHoveredBlock(board[rIdx][cIdx].occupyingBlock ?? null);
+    };
 
     return (
         <div
@@ -52,6 +57,14 @@ export function Board() {
                 color: red;
                 padding: 16px 47px;
             `}
+            onMouseEnter={() => {
+                hoveredBlock && showTooltip();
+            }}
+            onMouseLeave={() => {
+                hoveredBlock && hideTooltip();
+                setHoveredBlock(null);
+            }}
+            ref={containerRef}
         >
             <div
                 className={css`
@@ -64,15 +77,50 @@ export function Board() {
                             <Cell
                                 id={`${rIdx}_${cIdx}`}
                                 key={`${rIdx}_${cIdx}`}
-                                status={cell.status}
-                                onMouseDown={onMouseDown(rIdx, cIdx)}
-                                onMouseEnter={onMouseEnter(rIdx, cIdx)}
+                                data={cell}
+                                isHover={!!(cell.occupyingBlock && cell.occupyingBlock === hoveredBlock)}
                                 onMouseUp={onMouseUp}
+                                onMouseDown={onMouseDown(rIdx, cIdx)}
+                                onMouseEnter={() => {
+                                    onMouseEnter(rIdx, cIdx);
+                                    onHover(rIdx, cIdx);
+                                }}
                             />
                         ))}
                     </div>
                 ))}
             </div>
+            {isTooltipVisible && (
+                <Tooltip position={tooltipPosition}>
+                    <div>
+                        <img
+                            className={css`
+                                width: 96px;
+                                height: 68px;
+                                background: url(${hoveredBlock?.character.image ??
+                                    "https://ssl.nexon.com/s2/game/maplestory/renewal/common/no_char_img_180.png"})
+                                    no-repeat;
+                                background-size: 150%;
+                                background-position: -18px -46px;
+                                margin-bottom: 2px;
+                            `}
+                        />
+                        <div
+                            className={css`
+                                width: 100%;
+                                ${flex({
+                                    direction: FLEX_DIRECTION.COLUMN,
+                                    justifyContent: JUSTIFY_CONTENT.CENTER,
+                                    alignItems: ALIGN_ITEMS.CENTER,
+                                })}
+                            `}
+                        >
+                            <p>{`Lv.${hoveredBlock?.character.level}`}</p>
+                            <p>{hoveredBlock?.character.nickname}</p>
+                        </div>
+                    </div>
+                </Tooltip>
+            )}
         </div>
     );
 }

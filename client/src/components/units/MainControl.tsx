@@ -16,7 +16,7 @@ export function MainControl() {
         getUnionGrade,
         autoSelect,
     } = useCharacterList();
-    const { getSelectedCount, reset: resetBoard, simulate } = useBoard();
+    const { getSelectedCount, reset: resetBoard, simulate, updateBoard } = useBoard();
 
     const onClickReset = () => {
         resetCharacterList();
@@ -25,7 +25,12 @@ export function MainControl() {
 
     const onClickExec = () => {
         autoSelect();
-        simulate();
+        const simResult = simulate();
+        if (!simResult) {
+            alert("가능한 배치가 존재하지 않습니다.");
+            return;
+        }
+        updateBoard(simResult);
     };
 
     return (
