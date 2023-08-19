@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
-import { flex, border } from "#styles/mixin";
+import { initSize, flex, border } from "#styles/mixin";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
-import { BACKGROUND_COLOR, BORDER_COLOR, SHADOW_COLOR } from "#constants/colors";
+import { BACKGROUND_COLOR, BORDER_COLOR, CARD_BUTTON_COLOR, SHADOW_COLOR } from "#constants/colors";
 import { CARD_WIDTH, NO_CHAR_IMAGE } from "#constants/strings";
 export const Container = styled.div`
     position: relative;
@@ -26,11 +26,11 @@ export const Header = styled.div`
 `;
 
 export const Image = styled.div<{ url?: string }>`
-    width: 50%;
-    height: 90px;
     background: url(${({ url }) => url ?? NO_CHAR_IMAGE}) no-repeat;
-    background-size: 200%;
-    background-position: -40px -45px;
+    height: 85px;
+    width: 100%;
+    background-size: 150%;
+    background-position: -18px -46px;
     margin-bottom: 2px;
 `;
 
@@ -47,4 +47,39 @@ export const UsingIcon = styled.img`
     position: absolute;
     left: 84px;
     top: 26px;
+`;
+
+export const RefreshButton = styled.button`
+    ${flex({ justifyContent: JUSTIFY_CONTENT.CENTER, alignItems: ALIGN_ITEMS.CENTER })}
+    ${initSize("20px", "20px")};
+    padding: 0;
+    background: none;
+    border: none;
+    :hover {
+        cursor: pointer;
+    }
+    img {
+        width: 80%;
+        height: 80%;
+    }
+`;
+
+export const DeleteButton = styled.button`
+    position: absolute;
+    left: 100px;
+    top: -5px;
+    ${flex({ justifyContent: JUSTIFY_CONTENT.CENTER, alignItems: ALIGN_ITEMS.CENTER })}
+    ${initSize("18px", "18px")};
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    background: ${CARD_BUTTON_COLOR.DELETE};
+    border: none;
+    :hover {
+        cursor: pointer;
+    }
+    img {
+        width: 60%;
+        height: 60%;
+    }
 `;

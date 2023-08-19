@@ -1,4 +1,3 @@
-import { CELL_STATUS } from "#enums/status";
 import ClusteredBlockTable from "#classes/ClusteredBlockTable";
 import Position from "#classes/Position";
 import UnionBoard from "#classes/UnionBoard";
@@ -27,7 +26,7 @@ export default class WIS {
         this.board.board.forEach((row, rIdx) =>
             row.forEach(
                 (cell, cIdx) =>
-                    cell.status === CELL_STATUS.TO_BE_OCCUPIED && this.targetPositions.push(new Position(rIdx, cIdx))
+                    cell.isSelected && this.targetPositions.push(new Position(rIdx, cIdx))
             )
         );
         this.basePosition = this.getNextBasePosition();
@@ -44,7 +43,7 @@ export default class WIS {
     }
 
     private getNextBasePosition(): Position | undefined {
-        return this.targetPositions.find((position) => this.board.getCellFromPosition(position).isToBeOccupied);
+        return this.targetPositions.find((position) => this.board.getCellFromPosition(position).isSelected );
     }
 
     next() {

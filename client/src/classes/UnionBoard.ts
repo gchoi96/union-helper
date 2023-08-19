@@ -44,13 +44,7 @@ export default class UnionBoard {
     private isOccupiableArea(positions: Position[]) {
         return positions
             .map((position) => this.getCellFromPosition(position))
-            .every((cell) => cell?.status === CELL_STATUS.TO_BE_OCCUPIED);
-    }
-
-    private getDefaultBoard(): Cell[][] {
-        return Array.from({ length: UNION_BOARD_HEIGHT }, () =>
-            Array.from({ length: UNION_BOARD_WIDTH }, () => new Cell())
-        );
+            .every((cell) => cell?.status === CELL_STATUS.SELECTED);
     }
 
     private _board: Cell[][];
@@ -59,31 +53,22 @@ export default class UnionBoard {
         return this._board.map((row) => [...row]);
     }
 
-    constructor(board?: Cell[][]) {
-        this._board = board ?? this.getDefaultBoard();
+    constructor(board: Cell[][]) {
+        this._board = board;
     }
 
     getCellFromPosition(position: Position) {
         return this._board[position.y][position.x];
     }
     copy() {
-        const copiedBoard = new UnionBoard();
-        this._board.forEach((_, y) => {
-            this._board[y].forEach((_, x) => {
-                const pos = new Position(y, x);
-                const origin = this.getCellFromPosition(pos);
-                const copy = copiedBoard.getCellFromPosition(pos);
-                copy.status = origin.status;
-                origin.occupyingBlock && (copy.occupyingBlock = origin.occupyingBlock);
-            });
-        });
+        const copiedBoard = new UnionBoard(this._board.map((row) => row.map((cell) => cell.copy())));
         return copiedBoard;
     }
 
     removeBlock(positions: Position[]) {
         positions.forEach((pos) => {
             const cell = this.getCellFromPosition(pos);
-            cell.status = CELL_STATUS.TO_BE_OCCUPIED;
+            cell.status = CELL_STATUS.SELECTED;
             cell.occupyingBlock = null;
         });
     }
@@ -91,42 +76,39 @@ export default class UnionBoard {
     place(block: Block, positions: Position[]) {
         positions.forEach((pos) => {
             const cell = this.getCellFromPosition(pos);
-            cell.status = CELL_STATUS.OCCUPIED;
-            cell.occupy(block);
+            cell.place(block);
         });
     }
 
     updateCSSProperties() {
-        this._board.forEach((row, rIdx) =>
-            row.forEach((cell, cIdx) => {
+        this._board.forEach((row) =>
+            row.forEach((cell) => {
                 if (!cell.occupyingBlock) return;
-                const position = new Position(rIdx, cIdx);
-                let css: CSSProperties = {borderColor: "white"};
+                const position = cell.position;
+                let css: CSSProperties = { ...cell.css, borderColor: "white" };
                 const direction = ["Top", "Right", "Left", "Bottom"];
-                UnionBoard.searchDirection.map((delta) => position.move(delta))
-                
+                UnionBoard.searchDirection.map((delta) => position.move(delta));
                 UnionBoard.searchDirection.forEach((delta, idx) => {
                     const _position = position.move(delta);
-                    if(!UnionBoard.isValidPosition(_position)) return;
-                    if(this.getCellFromPosition(_position).occupyingBlock !== cell.occupyingBlock) return;
-                    css = {...css, [`border${direction[idx]}`]: "none"};
-                    
-                })
+                    if (!UnionBoard.isValidPosition(_position)) return;
+                    if (this.getCellFromPosition(_position).occupyingBlock !== cell.occupyingBlock) return;
+                    css = { ...css, [`border${direction[idx]}`]: "none" };
+                });
 
                 cell.css = css;
             })
         );
     }
 
-    setGroup(){
+    setGroup() {
         this.board.reduce((map, row, rIdx) => {
             row.forEach((cell, cIdx) => {
-                if(!cell.occupyingBlock) return;
-                if(!map.has(cell.occupyingBlock)) map.set(cell.occupyingBlock, []);
+                if (!cell.occupyingBlock) return;
+                if (!map.has(cell.occupyingBlock)) map.set(cell.occupyingBlock, []);
                 const group = map.get(cell.occupyingBlock);
                 group!.push(new Position(rIdx, cIdx));
                 cell.group = group!;
-            })
+            });
             return map;
         }, new Map<Block, Position[]>());
     }

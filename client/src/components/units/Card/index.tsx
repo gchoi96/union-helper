@@ -1,4 +1,3 @@
-import { Button } from "#components/commons/Button";
 import { JOB_NAME } from "#enums/job";
 import useCharacterList from "#hooks/useCharacterList";
 import { Character } from "#types/character";
@@ -35,25 +34,28 @@ export function Card({ character, ...props }: Props) {
                 <Txt {...options.nameLabelOptions}>{character.nickname}</Txt>
                 <S.ButtonWrapper>
                     {character.image && (
-                        <Button.IconButton
+                        <S.RefreshButton
                             onClick={(e) => {
                                 refresh(character);
                                 e.stopPropagation();
                             }}
                             {...options.refreshButtonOptions}
-                        ></Button.IconButton>
-                    )}
-                    {character.job?.name !== JOB_NAME.메이플M && (
-                        <Button.IconButton
-                            onClick={(e) => {
-                                _delete(character.nickname);
-                                e.stopPropagation();
-                            }}
-                            {...options.deleteButtonOptions}
-                        ></Button.IconButton>
+                        >
+                            <img src="/icons/refresh_icon.svg" alt="refresh_icon" />
+                        </S.RefreshButton>
                     )}
                 </S.ButtonWrapper>
                 {character.isUsed && <S.UsingIcon alt="using_icon" src="/icons/using_icon.svg" />}
+                {isTooltipVisible && character.job?.name !== JOB_NAME.메이플M && (
+                    <S.DeleteButton
+                        onClick={(e) => {
+                            _delete(character.nickname);
+                            e.stopPropagation();
+                        }}
+                    >
+                        <img src="/icons/x_icon.svg" alt="x_icon"></img>
+                    </S.DeleteButton>
+                )}
             </S.Container>
             {isTooltipVisible && (
                 <Tooltip position={tooltipPosition}>

@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import { flex } from "#styles/mixin";
 import { ALIGN_ITEMS, JUSTIFY_CONTENT } from "#enums/flex";
-import { BACKGROUND_COLOR, SHADOW_COLOR, TEXT_COLOR } from "#constants/colors";
+import { BACKGROUND_COLOR, SHADOW_COLOR, TEXT_BUTTON_COLOR, TEXT_COLOR } from "#constants/colors";
+import { BUTTON_TYPE } from "#enums/status";
 export const Container = styled.div`
     ${flex({ justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN, alignItems: ALIGN_ITEMS.CENTER })}
     width:100%;
@@ -42,7 +43,18 @@ export const ControlWrapper = styled.div`
     }
 `;
 
+export const Button = styled.div`
+    font-weight: 600;
+    box-shadow: 0px 2px 1px 0px ${SHADOW_COLOR.BLACK};
+    border-radius: 5px;
+    cursor: pointer;
+    color: ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].font};
+    background: ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].background};
+    border: ${`1px solid ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].border}`};
+    font-size: 14px;
+    padding: 4px 8px;
+`;
 export const MobileTxt = styled.div`
-                              width: 80px;
-                            text-align: center;
-`
+    width: 80px;
+    text-align: center;
+`;

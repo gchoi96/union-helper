@@ -1,4 +1,3 @@
-import { Button } from "#components/commons/Button";
 import { Txt } from "#components/commons/Txt";
 import { SHADOW_COLOR, TEXT_COLOR } from "#constants/colors";
 import useCharacterList from "#hooks/useCharacterList";
@@ -27,12 +26,12 @@ export function CardControl() {
             </div>
             <S.ControlWrapper>
                 <div>
-                    <Button onClick={decrease}>{"-"}</Button>
+                    <S.Button onClick={decrease}>{"-"}</S.Button>
                     <S.MobileTxt>메이플M Lv.{mobileLevel}</S.MobileTxt>
-                    <Button onClick={increase}>{"+"}</Button>
+                    <S.Button onClick={increase}>{"+"}</S.Button>
                 </div>
-                <Button onClick={addCharacterModal.openModal}>캐릭터 추가하기</Button>
-                <Button onClick={addCharactersModal.openModal}>캐릭터 목록 추가하기</Button>
+                <S.Button onClick={addCharacterModal.openModal}>캐릭터 추가하기</S.Button>
+                <S.Button onClick={addCharactersModal.openModal}>캐릭터 목록 추가하기</S.Button>
             </S.ControlWrapper>
             {addCharactersModal.isModalVisible && <AddCharactersModal closeModal={addCharactersModal.closeModal} />}
             {addCharacterModal.isModalVisible && <AddCharacterModal closeModal={addCharacterModal.closeModal} />}

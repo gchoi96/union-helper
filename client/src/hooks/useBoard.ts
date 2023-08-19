@@ -9,18 +9,18 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import useCharacterList from "./useCharacterList";
 
 export default function useBoard() {
-    const [board, setBoard] = useRecoilState(boardState);
+    const [{ placed, board }, setBoard] = useRecoilState(boardState);
     const reset = useResetRecoilState(boardState);
     const { getSelectedList } = useCharacterList();
     const changeCellStatus = ({ rIdx, cIdx, status }: { rIdx: number; cIdx: number; status: CELL_STATUS }) => {
         const newBoard = board.map((row) => row.map((cell) => cell.copy()));
         newBoard[rIdx][cIdx].changeStatus(status);
-        setBoard(newBoard);
+        setBoard({ placed: false, board: newBoard });
     };
 
     const getSelectedCount = () => {
         return board.reduce((total, row) => {
-            return total + row.reduce((total, cell) => total + (cell.status === CELL_STATUS.TO_BE_OCCUPIED ? 1 : 0), 0);
+            return total + row.reduce((total, cell) => total + (cell.status !== CELL_STATUS.NOT_SELECTED ? 1 : 0), 0);
         }, 0);
     };
 
@@ -39,10 +39,7 @@ export default function useBoard() {
         return board
             .map((row) =>
                 row
-                    .filter(
-                        (cell) =>
-                            cell.ability && [CELL_STATUS.OCCUPIED, CELL_STATUS.TO_BE_OCCUPIED].includes(cell.status)
-                    )
+                    .filter((cell) => cell.ability && cell.status !== CELL_STATUS.NOT_SELECTED)
                     .map((cell) => cell.ability!)
             )
             .flat()
@@ -53,7 +50,8 @@ export default function useBoard() {
     };
 
     const updateBoard = (board: Cell[][]) => {
-        setBoard(board);
+        board.forEach((row, rIdx) => row.forEach((cell, cIdx) => (cell.ability = board[rIdx][cIdx].ability)));
+        setBoard({ placed: true, board: board });
     };
 
     const simulate = () => {
@@ -64,5 +62,38 @@ export default function useBoard() {
         return unionManager.simulate();
     };
 
-    return { board, getAbilityList, setBoard, changeCellStatus, getSelectedCount, reset, simulate, updateBoard };
+    const removeBlocks = () => {
+        setBoard({
+            placed: false,
+            board: board.map((row) =>
+                row.map(
+                    (cell) =>
+                        new Cell(
+                            cell.position,
+                            cell.ability,
+                            cell.status === CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED
+                            )
+                )
+            ),
+        });
+    };
+
+    const test = () => 
+    {
+        return board.map(row => row.filter(cell => cell.status === CELL_STATUS.SELECTED).map(cell => cell.position)).flat()
+    }
+
+    return {
+        placed,
+        board,
+        getAbilityList,
+        removeBlocks,
+        setBoard,
+        changeCellStatus,
+        getSelectedCount,
+        reset,
+        simulate,
+        updateBoard,
+        test
+    };
 }

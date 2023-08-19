@@ -9,24 +9,25 @@ import useTooltip from "#hooks/useTooltip";
 import { Tooltip } from "#components/commons/Tooltip";
 import * as S from "./styles";
 export function Board() {
-    const { board, changeCellStatus, getSelectedCount } = useBoard();
+    const { placed, removeBlocks, board, changeCellStatus, getSelectedCount } = useBoard();
     const { getOccupiableSize } = useCharacterList();
-    const [dragStatus, setDragStatus] = useState({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
+    const [dragStatus, setDragStatus] = useState({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
     const [hoveredBlock, setHoveredBlock] = useState<Block | null>(null);
     const { isTooltipVisible, containerRef, tooltipPosition } = useTooltip();
+
     const onMouseDown = (rIdx: number, cIdx: number) => () => {
         setDragStatus({ dragging: true, target: board[rIdx][cIdx].status });
         toggleCellStatus(rIdx, cIdx)();
     };
-    const onMouseUp = () => setDragStatus({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
+
+    const onMouseUp = () => setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
 
     const toggleCellStatus = (rIdx: number, cIdx: number) => () => {
         const prevStatus = board[rIdx][cIdx].status;
-        if (prevStatus === CELL_STATUS.UNAVAILABLE) return;
-        const nextStatus = prevStatus === CELL_STATUS.AVAILABLE ? CELL_STATUS.TO_BE_OCCUPIED : CELL_STATUS.AVAILABLE;
-        if (nextStatus === CELL_STATUS.TO_BE_OCCUPIED && getSelectedCount() + 1 > getOccupiableSize()) {
+        const nextStatus = prevStatus === CELL_STATUS.SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
+        if (nextStatus === CELL_STATUS.SELECTED && getSelectedCount() + 1 > getOccupiableSize()) {
             alert(MESSAGE.ALREADY_SELECT_MAXIMUM_COUNT);
-            setDragStatus({ dragging: false, target: CELL_STATUS.UNAVAILABLE });
+            setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
             return;
         }
         changeCellStatus({ rIdx, cIdx, status: nextStatus });
@@ -47,6 +48,7 @@ export function Board() {
                     <div>
                         {row.map((cell, cIdx) => (
                             <Cell
+                                draggable={false}
                                 id={`${rIdx}_${cIdx}`}
                                 key={`${rIdx}_${cIdx}`}
                                 data={cell}

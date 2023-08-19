@@ -4,10 +4,9 @@ export enum BLOCK_STATUS {
 }
 
 export enum CELL_STATUS {
-    OCCUPIED,
-    TO_BE_OCCUPIED,
-    AVAILABLE,
-    UNAVAILABLE,
+    SELECTED,
+    NOT_SELECTED,
+    PLACED
 }
 
 export enum BUTTON_TYPE {

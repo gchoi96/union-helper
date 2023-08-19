@@ -1,6 +1,7 @@
 import { Button } from "#components/commons/Button";
 import { Counter } from "#components/commons/Counter";
 import { BUTTON_TYPE } from "#enums/status";
+import { useAlert } from "#hooks/useAlert";
 import useBoard from "#hooks/useBoard";
 import useCharacterList from "#hooks/useCharacterList";
 import * as S from "./styles";
@@ -13,7 +14,7 @@ export function MainControl() {
         autoSelect,
     } = useCharacterList();
     const { getSelectedCount, reset: resetBoard, simulate, updateBoard } = useBoard();
-
+    const alert = useAlert();
     const onClickReset = () => {
         resetCharacterList();
         resetBoard();
@@ -45,7 +46,7 @@ export function MainControl() {
                 </Counter>
             </S.CounterWrapper>
             <S.ButtonWrapper>
-                <Button size="large" onClick={() => {}}>
+                <Button size="large" onClick={() => {alert("오류가 있어 수정 중입니다.")}}>
                     점령지역 자동선택
                 </Button>
                 <div>

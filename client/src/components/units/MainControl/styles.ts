@@ -34,11 +34,11 @@ export const CounterWrapper = styled.div`
 `;
 
 export const ButtonWrapper = styled.div`
-                      > div {
-                        ${flex({ justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN, alignItems: ALIGN_ITEMS.CENTER })};
-                        margin-top: 27px;
-                        > :not(:first-child) {
-                            margin-left: 27px;
-                        }
-                    }
-`
+    > div {
+        ${flex({ justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN, alignItems: ALIGN_ITEMS.CENTER })};
+        margin-top: 27px;
+        > :not(:first-child) {
+            margin-left: 27px;
+        }
+    }
+`;

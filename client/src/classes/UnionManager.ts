@@ -15,7 +15,7 @@ export default class UnionManager {
     }
 
     simulate() {
-        const controlPositions = UnionBoard.controlArea.filter((p) => this.board.getCellFromPosition(p).isToBeOccupied);
+        const controlPositions = UnionBoard.controlArea.filter((p) => this.board.getCellFromPosition(p).isSelected);
         const wises = this.placeFirstBlock(controlPositions, this.blockTable);
         const result = this.getPlacementResult(wises);
         return result;
