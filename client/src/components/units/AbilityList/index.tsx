@@ -22,8 +22,7 @@ export function AbilityList() {
             <Txt.GradientTxt gradient={TEXT_COLOR.CONTROL_TITLE}>공격대 효과</Txt.GradientTxt>
             <Blank size={7} />
             <S.BoxWrapper>
-                <Box {...boxOptions}>
-                    <Box.Label>공격대원 효과</Box.Label>
+                <Box label="공격대원 효과" {...boxOptions}>
                     <div>
                         {characterList
                             .filter((character, idx) => character.job && character.isUsed)
@@ -45,8 +44,7 @@ export function AbilityList() {
                     </div>
                 </Box>
                 <Blank size={6} direction="horizontal" />
-                <Box {...boxOptions}>
-                    <Box.Label>공격대 점령 효과</Box.Label>
+                <Box label="공격대 점령 효과" {...boxOptions}>
                     {Object.entries(getAbilityList()).map(([abilityName, value]) => (
                         <p>{`${abilityName} ${value}${abilityName === EXTERNAL_AREA.상태이상내성 ? "" : "%"} 증가`}</p>
                     ))}

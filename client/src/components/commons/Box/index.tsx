@@ -1,38 +1,16 @@
-import { TEXT_COLOR } from "#constants/colors";
-import { Border } from "#types/border";
 import { HTMLAttributes } from "react";
 import * as S from "./styles";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
     width: string;
     height: string;
+    label?: string;
 }
-export function Box({ width, height, children, ...props }: Props) {
+export function Box({ width, height, children, label, ...props }: Props) {
     return (
         <S.Container width={width} height={height} {...props}>
-            <div>{children}</div>
+            {label && <S.Label>{label}</S.Label>}
+            <S.Content>{children}</S.Content>
         </S.Container>
     );
 }
-
-interface LabelProps extends HTMLAttributes<HTMLParagraphElement> {
-    size?: string;
-    weight?: number;
-    color?: string;
-    border?: Border;
-}
-
-Box.Label = function ({
-    border,
-    size = "13px",
-    weight = 400,
-    color = TEXT_COLOR.WHITE,
-    children,
-    ...props
-}: LabelProps) {
-    return (
-        <S.Label border={border} size={size} weight={weight} color={color} {...props}>
-            {children}
-        </S.Label>
-    );
-};

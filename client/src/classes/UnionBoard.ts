@@ -112,4 +112,39 @@ export default class UnionBoard {
             return map;
         }, new Map<Block, Position[]>());
     }
+
+    toString() {
+        const SQUARE_UNICODE = {
+            BLUE: "\uD83D\uDFE6",
+            GREEN: "\uD83D\uDFE9",
+            YELLOW: "\uD83D\uDFE8",
+        };
+        const getColorSquare = (status: CELL_STATUS) => {
+            switch (status) {
+                case CELL_STATUS.NOT_SELECTED:
+                    return SQUARE_UNICODE.YELLOW;
+                case CELL_STATUS.PLACED:
+                    return SQUARE_UNICODE.BLUE;
+                case CELL_STATUS.SELECTED:
+                    return SQUARE_UNICODE.GREEN;
+            }
+        };
+        return this.board
+            .map((row) =>
+                row
+                    .map((cell) => {
+                        if (cell.status === CELL_STATUS.PLACED)
+                            return SQUARE_UNICODE.BLUE;
+                        return getColorSquare(cell.status);
+                    })
+                    .join(" ")
+            )
+            .join("\n");
+    }
+
+    getAdjacentPositions(position: Position) {
+        return UnionBoard.searchDirection
+            .map((delta) => position.move(delta))
+            .filter((pos) => UnionBoard.isValidPosition(pos));
+    }
 }

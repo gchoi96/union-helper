@@ -39,3 +39,15 @@ export const border = (width: string, color: string, radius?: string) => css`
 export const textBorder = (weight: string | number, color: string) => css`
     text-shadow: ${`-${weight} 0 ${color}, 0 ${weight} ${color}, ${weight} 0 ${color}, 0 -${weight} ${color}`};
 `;
+
+export const spin = () => css`
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    animation: spin 2s linear infinite;
+`;

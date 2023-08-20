@@ -8,15 +8,22 @@ import { Block } from "#classes/Block";
 import useTooltip from "#hooks/useTooltip";
 import { Tooltip } from "#components/commons/Tooltip";
 import * as S from "./styles";
+import { useAlert } from "#hooks/useAlert";
 export function Board() {
-    const { placed, removeBlocks, board, changeCellStatus, getSelectedCount } = useBoard();
+    const { removeBlocks, board, changeCellStatus, getSelectedCount } = useBoard();
     const { getOccupiableSize } = useCharacterList();
     const [dragStatus, setDragStatus] = useState({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
     const [hoveredBlock, setHoveredBlock] = useState<Block | null>(null);
     const { isTooltipVisible, containerRef, tooltipPosition } = useTooltip();
-
+    const alert = useAlert();
     const onMouseDown = (rIdx: number, cIdx: number) => () => {
-        setDragStatus({ dragging: true, target: board[rIdx][cIdx].status });
+        removeBlocks();
+        setDragStatus({
+            dragging: true,
+            target: [CELL_STATUS.PLACED, CELL_STATUS.SELECTED].includes(board[rIdx][cIdx].status)
+                ? CELL_STATUS.SELECTED
+                : CELL_STATUS.NOT_SELECTED,
+        });
         toggleCellStatus(rIdx, cIdx)();
     };
 
@@ -24,7 +31,7 @@ export function Board() {
 
     const toggleCellStatus = (rIdx: number, cIdx: number) => () => {
         const prevStatus = board[rIdx][cIdx].status;
-        const nextStatus = prevStatus === CELL_STATUS.SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
+        const nextStatus = prevStatus !== CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
         if (nextStatus === CELL_STATUS.SELECTED && getSelectedCount() + 1 > getOccupiableSize()) {
             alert(MESSAGE.ALREADY_SELECT_MAXIMUM_COUNT);
             setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
@@ -37,6 +44,7 @@ export function Board() {
         if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
         toggleCellStatus(rIdx, cIdx)();
     };
+
     const onHover = (rIdx: number, cIdx: number) => {
         setHoveredBlock(board[rIdx][cIdx].occupyingBlock ?? null);
     };

@@ -18,3 +18,16 @@ export const ERROR = {
 };
 
 export const NO_CHAR_IMAGE = "https://ssl.nexon.com/s2/game/maplestory/renewal/common/no_char_img_180.png";
+
+export const PASTE_PLACEHOLDER = `1. 메이플스토리 홈페이지
+
+2. 마이 메이플
+
+3. 대표 캐릭터 변경
+
+4. 메이플 ID / 월드 선택
+
+5. 전체 선택 후 텍스트 복사
+(Ctrl + A -> Ctrl + C)
+
+6. 이곳에 붙여넣기`;

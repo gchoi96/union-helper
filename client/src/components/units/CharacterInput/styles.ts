@@ -5,13 +5,7 @@ import { BACKGROUND_COLOR, TEXT_COLOR } from "#constants/colors";
 import { css } from "@emotion/css";
 
 const inputStyle = css`
-    color: ${TEXT_COLOR.WHITE};
-    border: none;
-    background: ${BACKGROUND_COLOR.INPUT};
-    padding: 1px 2px;
-    :focus {
-        outline: 1px solid gray;
-    }
+
 `;
 
 export const Container = styled.div`
@@ -20,33 +14,34 @@ export const Container = styled.div`
 `;
 
 export const InputWrapper = styled.div`
-    > :first-child {
         ${flex({ alignItems: ALIGN_ITEMS.CENTER })}
-        text-align: center;
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 0.2px;
-        > p {
-            font-size: 12px;
-        }
         > :last-child {
             margin-left: 6px;
         }
-    }
 `;
 
 export const NicknameTxt = styled.p`
-    font-size: 12px;
+    font-size: 10px;
 `;
 
 export const LevelInput = styled.input`
-    font-size: 16px;
+    font-size: 10px;
     width: 32px;
-    ${inputStyle}
+    color: ${TEXT_COLOR.WHITE};
+    border: none;
+    background: ${BACKGROUND_COLOR.INPUT};
+    :focus {
+        outline: 1px solid gray;
+    }
 `;
 
 export const JobSelect = styled.select`
     font-size: 10px;
     width: 100px;
-    ${inputStyle}
+    color: ${TEXT_COLOR.WHITE};
+    border: none;
+    background: ${BACKGROUND_COLOR.INPUT};
+    :focus {
+        outline: 1px solid gray;
+    }
 `;

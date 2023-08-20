@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { initSize, flex, border } from "#styles/mixin";
+import { initSize, flex, border, spin } from "#styles/mixin";
 import { ALIGN_ITEMS, FLEX_DIRECTION, JUSTIFY_CONTENT } from "#enums/flex";
 import { BACKGROUND_COLOR, BORDER_COLOR, CARD_BUTTON_COLOR, SHADOW_COLOR } from "#constants/colors";
 import { CARD_WIDTH, NO_CHAR_IMAGE } from "#constants/strings";
@@ -49,7 +49,7 @@ export const UsingIcon = styled.img`
     top: 26px;
 `;
 
-export const RefreshButton = styled.button`
+export const RefreshButton = styled.button<{ isLoading?: boolean }>`
     ${flex({ justifyContent: JUSTIFY_CONTENT.CENTER, alignItems: ALIGN_ITEMS.CENTER })}
     ${initSize("20px", "20px")};
     padding: 0;
@@ -62,6 +62,7 @@ export const RefreshButton = styled.button`
         width: 80%;
         height: 80%;
     }
+    ${({ isLoading }) => isLoading && spin()}
 `;
 
 export const DeleteButton = styled.button`

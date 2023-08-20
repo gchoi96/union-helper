@@ -2,20 +2,27 @@ import { JOB_NAME } from "#enums/job";
 import useCharacterList from "#hooks/useCharacterList";
 import { Character } from "#types/character";
 import { getGradeFromCharacterLevel } from "#utils";
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, MouseEventHandler } from "react";
 import { Tooltip } from "#components/commons/Tooltip";
 import { Txt } from "#components/commons/Txt";
 import useTooltip from "#hooks/useTooltip";
 import { JOB_MAP } from "#constants/maps";
 import * as options from "./options";
 import * as S from "./styles";
+import { useRefetchCharacter } from "#hooks/http/useRefetchCharacter";
 interface Props extends HTMLAttributes<HTMLDivElement> {
     character: Character;
 }
 
 export function Card({ character, ...props }: Props) {
-    const { use, release, _delete, refresh } = useCharacterList();
+    const { use, release, _delete } = useCharacterList();
     const { isTooltipVisible, containerRef, tooltipPosition } = useTooltip();
+    const { isLoading, refetch } = useRefetchCharacter(character.nickname);
+    const onClickRefetch: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        refetch();
+        e.stopPropagation();
+    };
+
     return (
         <>
             <S.Container
@@ -35,10 +42,8 @@ export function Card({ character, ...props }: Props) {
                 <S.ButtonWrapper>
                     {character.image && (
                         <S.RefreshButton
-                            onClick={(e) => {
-                                refresh(character);
-                                e.stopPropagation();
-                            }}
+                            isLoading={isLoading}
+                            onClick={onClickRefetch}
                             {...options.refreshButtonOptions}
                         >
                             <img src="/icons/refresh_icon.svg" alt="refresh_icon" />

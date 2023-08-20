@@ -1,6 +1,5 @@
 import { Block } from "#classes/Block";
 import { JOB_NAME } from "#enums/job";
-import { fetchCharacterInfo } from "#http/fetchCharacter";
 import { characterListState, mobileLevelState } from "#store/characterList";
 import { Character } from "#types/character";
 import { UnionGrade } from "#types/unionGrade";
@@ -11,7 +10,6 @@ import { useRecoilState } from "recoil";
 export default function useCharacterList() {
     const [characterList, setCharacterList] = useRecoilState(characterListState);
     const [mobileState, setMobileState] = useRecoilState(mobileLevelState);
-
     useEffect(() => {
         localStorage.setItem("characters", JSON.stringify(characterList));
     }, [characterList]);
@@ -48,15 +46,6 @@ export default function useCharacterList() {
 
     const _delete = (nickname: string) => {
         setCharacterList((prev) => prev.filter((character) => character.nickname !== nickname));
-    };
-
-    const refresh = async (character: Character) => {
-        const { nickname, isUsed } = character;
-        const refreshedCharacter = await fetchCharacterInfo(character.nickname);
-        setCharacterList((prev) => [
-            ...prev.filter((character) => character.nickname !== nickname),
-            { ...refreshedCharacter, isUsed },
-        ]);
     };
 
     const use = (nickname: string) => {
@@ -97,7 +86,6 @@ export default function useCharacterList() {
 
     return {
         characterList,
-        setCharacterList: (characterList: Character[]) => setCharacterList(characterList),
         getTotalLevel,
         getOccupiableSize,
         getActiveCount,
@@ -106,7 +94,6 @@ export default function useCharacterList() {
         reset,
         getUnionGrade,
         _delete,
-        refresh,
         add,
         autoSelect,
         getSelectedList,

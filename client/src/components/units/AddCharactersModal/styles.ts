@@ -7,6 +7,7 @@ export const Container = styled.div`
     width:100%;
     height: 100%;
     textarea {
+        font-size: 10px;
         width: 100%;
         height: 99%;
         resize: none;

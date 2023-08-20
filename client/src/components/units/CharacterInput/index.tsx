@@ -1,26 +1,26 @@
 import { Button } from "#components/commons/Button";
 import { JOB_MAP } from "#constants/maps";
 import { MESSAGE } from "#constants/strings";
-import { useKey } from "#hooks/useKey";
+import { useAlert } from "#hooks/useAlert";
 import { Character } from "#types/character";
 import { ChangeEventHandler, HTMLAttributes, useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
 import * as S from "./styles";
 
 interface CharacterInfoInput extends HTMLAttributes<HTMLDivElement> {
-    nickname: string;
-    onSave: (character: Character) => void;
+    character: Character;
 }
 
-export default function CharacterInput({ onSave, ...props }: CharacterInfoInput) {
+export default function CharacterInput({ character }: CharacterInfoInput) {
     const [level, setLevel] = useState("");
     const [job, setJob] = useState("");
-    const { generate } = useKey("job");
+    const alert = useAlert();
+    const queryClient = useQueryClient();
     const onInputLevel: ChangeEventHandler<HTMLInputElement> = (e) => {
         const value = e.target.value;
         const isNumber = /^\d+$/.test(value);
         if (isNumber) setLevel(value);
     };
-
     const onBlurLevel = () => {
         const number = Number(level);
         if (!level.length) return;
@@ -36,32 +36,24 @@ export default function CharacterInput({ onSave, ...props }: CharacterInfoInput)
             alert(MESSAGE.MISSING_REQUIRED_INPUT);
             return;
         }
-        const character = {
-            nickname: props.nickname,
-            level: Number(level),
-            job: JOB_MAP[job],
-            image: "",
-            isUsed: false,
-            isMobile: false,
-        };
-        onSave(character);
+        queryClient.setQueryData(['character', character.nickname], {...character, level, job: JOB_MAP[job]}, {});
     };
 
     return (
         <S.Container>
             <S.InputWrapper>
-                <S.NicknameTxt>{`${props.nickname} Lv.`}</S.NicknameTxt>
+                <S.NicknameTxt>{`${character.nickname} Lv.`}</S.NicknameTxt>
                 <S.LevelInput value={level} onInput={onInputLevel} onBlur={onBlurLevel} placeholder="000" />
                 <S.JobSelect onChange={onChangeSelect}>
                     <option value="">직업</option>
                     {Object.keys(JOB_MAP).map((job, idx) => (
-                        <option value={job} key={generate()}>
+                        <option value={job} key={`job_${idx}`}>
                             {job}
                         </option>
                     ))}
                 </S.JobSelect>
             </S.InputWrapper>
-            <Button.IconButton image="" onClick={onClickAdd} />
+            <Button.IconButton image="/icons/plus_icon.svg" onClick={onClickAdd} />
         </S.Container>
     );
 }

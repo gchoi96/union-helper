@@ -6,12 +6,13 @@ import useModal from "#hooks/useModal";
 import { AddCharacterModal } from "#components/units/AddCharacterModal";
 import { AddCharactersModal } from "#components/units/AddCharactersModal";
 import * as S from "./styles";
+import { BUTTON_TYPE } from "#enums/status";
 
 export function CardControl() {
-    const { getActiveCount, getUnionGrade } = useCharacterList();
     const { mobileLevel, increase, decrease } = useMapleM();
     const addCharactersModal = useModal();
     const addCharacterModal = useModal();
+    const { getActiveCount, getUnionGrade, reset } = useCharacterList();
     return (
         <S.Container>
             <div>
@@ -30,8 +31,11 @@ export function CardControl() {
                     <S.MobileTxt>메이플M Lv.{mobileLevel}</S.MobileTxt>
                     <S.Button onClick={increase}>{"+"}</S.Button>
                 </div>
-                <S.Button onClick={addCharacterModal.openModal}>캐릭터 추가하기</S.Button>
-                <S.Button onClick={addCharactersModal.openModal}>캐릭터 목록 추가하기</S.Button>
+                <S.Button onClick={addCharacterModal.openModal}>캐릭터 추가</S.Button>
+                <S.Button onClick={addCharactersModal.openModal}>캐릭터 목록 추가</S.Button>
+                <S.Button onClick={reset} type={BUTTON_TYPE.RED}>
+                    <img src="/icons/trash_icon.svg" alt="trash_icon" />
+                </S.Button>
             </S.ControlWrapper>
             {addCharactersModal.isModalVisible && <AddCharactersModal closeModal={addCharactersModal.closeModal} />}
             {addCharacterModal.isModalVisible && <AddCharacterModal closeModal={addCharacterModal.closeModal} />}

@@ -5,6 +5,7 @@ import { TEXT_COLOR } from "#constants/colors";
 import { JOB_MAP } from "#constants/maps";
 import { MESSAGE } from "#constants/strings";
 import { JOB_NAME } from "#enums/job";
+import { useAlert } from "#hooks/useAlert";
 import useCharacterList from "#hooks/useCharacterList";
 import { ChangeEventHandler, useState } from "react";
 import * as S from "./styles";
@@ -22,7 +23,7 @@ export function AddCharacterModal({ closeModal }: Props) {
     const [level, setLevel] = useState("");
     const [job, setJob] = useState("");
     const { add } = useCharacterList();
-
+    const alert = useAlert();
     const onBlurLevel = () => {
         const number = Number(level);
         if (!level.length) return;

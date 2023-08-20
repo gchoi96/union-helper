@@ -2,6 +2,7 @@ import ClusteredBlockTable from "#classes/ClusteredBlockTable";
 import Position from "#classes/Position";
 import UnionBoard from "#classes/UnionBoard";
 import { ShapeDetail } from "#types/ShapeDetail";
+import { removeDuplicates } from "#utils";
 
 interface WISInput {
     board: UnionBoard;
@@ -24,10 +25,7 @@ export default class WIS {
         this.board = wis.board;
         this.blockTable = wis.blockTable;
         this.board.board.forEach((row, rIdx) =>
-            row.forEach(
-                (cell, cIdx) =>
-                    cell.isSelected && this.targetPositions.push(new Position(rIdx, cIdx))
-            )
+            row.forEach((cell, cIdx) => cell.isSelected && this.targetPositions.push(new Position(rIdx, cIdx)))
         );
         this.basePosition = this.getNextBasePosition();
     }
@@ -43,12 +41,11 @@ export default class WIS {
     }
 
     private getNextBasePosition(): Position | undefined {
-        return this.targetPositions.find((position) => this.board.getCellFromPosition(position).isSelected );
+        return this.targetPositions.find((position) => this.board.getCellFromPosition(position).isSelected);
     }
 
     next() {
         if (!this.basePosition) return true;
-
         for (; this.blockTable.shapeIdx < this.blockTable.shapeCount; this.blockTable.shapeIdx++) {
             const shapeDetail = this.blockTable.table[this.blockTable.shapeIdx];
             if (shapeDetail.blockIdx >= shapeDetail.blocks.length) continue;
@@ -57,12 +54,12 @@ export default class WIS {
                     (delta) => this.basePosition?.move(delta)!
                 );
                 if (!this.board.isPlacementPossible(placedPositions)) continue;
+                console.log(this.board.toString())
                 return this.place(this.basePosition, placedPositions, shapeDetail);
             }
             shapeDetail.deltaIdx = 0;
         }
         if (!this.history.length) return false;
-
         this.revert();
         return false;
     }
@@ -90,6 +87,18 @@ export default class WIS {
         this.blockTable.shapeIdx = 0;
         this.board.place(block, placedPositions);
         this.basePosition = this.getNextBasePosition();
+
+        // 블록 배치 후 dead zone이 발생하면 revert
+        const adjacentPositions = removeDuplicates(placedPositions.map(this.board.getAdjacentPositions).flat()).filter(
+            (pos) => this.board.getCellFromPosition(pos).isSelected
+        );
+        const isDeadzone = adjacentPositions.some((pos) =>
+            UnionBoard.searchDirection
+                .map((delta) => pos.move(delta))
+                .filter((adjPos) => UnionBoard.isValidPosition(adjPos))
+                .every((adjPos) => !this.board.getCellFromPosition(adjPos).isSelected)
+        );
+        if (isDeadzone) this.revert();
         return this.basePosition ? false : true;
     }
 }

@@ -1,4 +1,4 @@
-import { UNION_GRADE_MAP } from "#constants/maps";
+import { JOB_MAP, UNION_GRADE_MAP } from "#constants/maps";
 import { ERROR, SELECT_WORLD_CHARACTER } from "#constants/strings";
 import { JOB_NAME } from "#enums/job";
 import { Character } from "#types/character";
@@ -72,3 +72,17 @@ export const getGradeFromCharacterLevel = (character: Character) => {
     if (level >= 100) return "A";
     return "B";
 };
+
+export const convertResponseToCharacter = (character: {
+    nickname: string;
+    level: string;
+    image: string;
+    job: string;
+}) => ({
+    nickname: character.nickname,
+    job: JOB_MAP[character.job],
+    level: Number(character.level),
+    image: character.image,
+    isUsed: false,
+    isMobile: false,
+});

@@ -1,13 +1,13 @@
-import { MESSAGE } from "#constants/strings";
-import useCharacterList from "#hooks/useCharacterList";
+import { MESSAGE, PASTE_PLACEHOLDER } from "#constants/strings";
 import { Character } from "#types/character";
 import { ClipboardEventHandler, KeyboardEventHandler, useState } from "react";
 import { extractCharacterList } from "#utils";
-import { fetchCharacters } from "#http/fetchCharacter";
 import Modal from "#components/commons/Modal";
 import { Box } from "#components/commons/Box";
 import CharacterInput from "#components/units/CharacterInput";
 import { useAlert } from "#hooks/useAlert";
+import { useCharacterQueries } from "#hooks/http/useCharacterQueries";
+import { useUpdateCharacterList } from "#hooks/useUpdateCharacters";
 import * as S from "./styles";
 interface Props {
     closeModal: () => void;
@@ -15,18 +15,15 @@ interface Props {
 
 export function AddCharactersModal({ closeModal }: Props) {
     const [nicknames, setNicknames] = useState<string[]>([]);
-    const { setCharacterList } = useCharacterList();
     const alert = useAlert();
-    const [parsedCharacters, setParsedCharacters] = useState<{ success: Character[]; fail: Character[] }>({
-        success: [],
-        fail: [],
-    });
+    const queries = useCharacterQueries(nicknames);
+    const update = useUpdateCharacterList();
     const onKeyDownTextArea: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
         if (e.key === "Backspace") setNicknames([]);
     };
 
     const onClickSave = () => {
-        setCharacterList(parsedCharacters.success);
+        update(queries.filter(({ data }) => data).map(({ data }) => data as Character));
         closeModal();
     };
 
@@ -40,45 +37,28 @@ export function AddCharactersModal({ closeModal }: Props) {
         }
     };
 
-    const onClickFetch = async () => {
-        if (!nicknames.length) {
-            alert(MESSAGE.MISSING_CHARACTER_INPUT);
-            return;
-        }
-        setParsedCharacters(await fetchCharacters(nicknames));
-    };
-
     const getCharacterInfo = (character: Character) => {
         return `${character.nickname} Lv.${character.level} ${character.job?.name}`;
-    };
-
-    const addCharacter = (characterInfo: Character) => {
-        setParsedCharacters((prev) => ({
-            fail: prev.fail.filter((info) => info.nickname !== characterInfo.nickname),
-            success: [characterInfo, ...prev.success],
-        }));
     };
 
     return (
         <Modal closeModal={closeModal} onClickSave={onClickSave}>
             <S.Container>
-                <Box width="220px" height="380px">
-                    <Box.Label>홈페이지 정보 붙여넣기</Box.Label>
-                    <textarea onKeyDown={onKeyDownTextArea} onPaste={onPasteTextArea} value={nicknames.join("\r\n")} />
+                <Box label="홈페이지 정보 붙여넣기" width="220px" height="380px">
+                    <textarea placeholder={PASTE_PLACEHOLDER} onKeyDown={onKeyDownTextArea} onPaste={onPasteTextArea} value={nicknames.join("\r\n")} />
                 </Box>
-                <img src="/icons/load_icon.svg" onClick={onClickFetch} alt="load_icon" />
+                <img src="/icons/load_icon.svg" alt="load_icon" />
                 <S.Result>
-                    <Box width="360px" height="186px">
-                        <Box.Label>실패</Box.Label>
-                        {parsedCharacters.fail.map((character, idx) => (
-                            <CharacterInput key={`fail_${idx}`} nickname={character.nickname} onSave={addCharacter} />
-                        ))}
-                    </Box>
-                    <Box width="360px" height="186px">
-                        <Box.Label>성공</Box.Label>
-                        {parsedCharacters.success.map((character, idx) => (
-                            <p key={`fail_${idx}`}>{getCharacterInfo(character)}</p>
-                        ))}
+                    <Box label="결과" width="320px" height="380px">
+                        {queries.map(({ data: character, isLoading }, idx) =>
+                            isLoading ? (
+                                <div>Loading...</div>
+                            ) : character && character?.job ? (
+                                <p key={`character_${idx}`}>{getCharacterInfo(character)}</p>
+                            ) : (
+                                <CharacterInput key={`fail_${idx}`} character={character!} />
+                            )
+                        )}
                     </Box>
                 </S.Result>
             </S.Container>

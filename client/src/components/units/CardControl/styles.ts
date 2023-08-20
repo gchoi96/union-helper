@@ -43,16 +43,20 @@ export const ControlWrapper = styled.div`
     }
 `;
 
-export const Button = styled.div`
+export const Button = styled.div<{ type?: BUTTON_TYPE }>`
     font-weight: 600;
     box-shadow: 0px 2px 1px 0px ${SHADOW_COLOR.BLACK};
     border-radius: 5px;
     cursor: pointer;
     color: ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].font};
-    background: ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].background};
-    border: ${`1px solid ${TEXT_BUTTON_COLOR[BUTTON_TYPE.BLUE].border}`};
+    background: ${({ type }) => TEXT_BUTTON_COLOR[type ?? BUTTON_TYPE.BLUE].background};
+    border: ${({ type }) => `1px solid ${TEXT_BUTTON_COLOR[type ?? BUTTON_TYPE.BLUE].border}`};
     font-size: 14px;
     padding: 4px 8px;
+    height: 24px;
+    > img {
+        height: 100%;
+    }
 `;
 export const MobileTxt = styled.div`
     width: 80px;

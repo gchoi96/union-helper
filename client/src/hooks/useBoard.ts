@@ -9,13 +9,15 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import useCharacterList from "./useCharacterList";
 
 export default function useBoard() {
-    const [{ placed, board }, setBoard] = useRecoilState(boardState);
+    const [board, setBoard] = useRecoilState(boardState);
     const reset = useResetRecoilState(boardState);
     const { getSelectedList } = useCharacterList();
     const changeCellStatus = ({ rIdx, cIdx, status }: { rIdx: number; cIdx: number; status: CELL_STATUS }) => {
-        const newBoard = board.map((row) => row.map((cell) => cell.copy()));
-        newBoard[rIdx][cIdx].changeStatus(status);
-        setBoard({ placed: false, board: newBoard });
+        setBoard((prev) => {
+            const newBoard = prev.map((row) => row.map((cell) => cell.copy()));
+            newBoard[rIdx][cIdx].changeStatus(status);
+            return newBoard;
+        });
     };
 
     const getSelectedCount = () => {
@@ -51,7 +53,7 @@ export default function useBoard() {
 
     const updateBoard = (board: Cell[][]) => {
         board.forEach((row, rIdx) => row.forEach((cell, cIdx) => (cell.ability = board[rIdx][cIdx].ability)));
-        setBoard({ placed: true, board: board });
+        setBoard(board);
     };
 
     const simulate = () => {
@@ -63,28 +65,24 @@ export default function useBoard() {
     };
 
     const removeBlocks = () => {
-        setBoard({
-            placed: false,
-            board: board.map((row) =>
-                row.map(
-                    (cell) =>
-                        new Cell(
-                            cell.position,
-                            cell.ability,
-                            cell.status === CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED
-                            )
-                )
-            ),
-        });
+        setBoard(
+            board.map((row) =>
+                row.map((cell) => {
+                    let { position, ability, status } = cell;
+                    status = status === CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
+                    return new Cell(position, ability, status);
+                })
+            )
+        );
     };
 
-    const test = () => 
-    {
-        return board.map(row => row.filter(cell => cell.status === CELL_STATUS.SELECTED).map(cell => cell.position)).flat()
-    }
+    const test = () => {
+        return board
+            .map((row) => row.filter((cell) => cell.status === CELL_STATUS.SELECTED).map((cell) => cell.position))
+            .flat();
+    };
 
     return {
-        placed,
         board,
         getAbilityList,
         removeBlocks,
@@ -94,6 +92,6 @@ export default function useBoard() {
         reset,
         simulate,
         updateBoard,
-        test
+        test,
     };
 }

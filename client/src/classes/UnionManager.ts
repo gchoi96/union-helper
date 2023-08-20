@@ -21,23 +21,25 @@ export default class UnionManager {
         return result;
     }
 
-    private getPlacementResult(wises: WIS[]) {
-        let result: UnionBoard | undefined = undefined;
-        const inner = (wis: WIS) => {
-            let iterationCount = 0;
-            while (++iterationCount < MAX_ITERATION_COUNT) {
-                const success = wis.next();
-                if (!success) continue;
-                result = wis.board;
-                break;
-            }
-        };
-        wises.forEach(inner);
-        if (!result) return undefined;
-        result = result as UnionBoard;
-        result.updateCSSProperties();
-        result.setGroup();
-        return (result as UnionBoard).board;
+    private async getPlacementResult(wises: WIS[]) {
+        const inner = (wis: WIS) =>
+            new Promise<UnionBoard>((resolve, reject) => {
+                let iterationCount = 0;
+                while (++iterationCount < MAX_ITERATION_COUNT) {
+                    const end = wis.next();
+                    if (!end) continue;
+                    resolve(wis.board);
+                }
+                // reject("가능한 배치 없음")
+            });
+
+        return Promise.any(wises.map(inner)).then((result) => {
+            if (!result) return undefined;
+            result = result as UnionBoard;
+            result.updateCSSProperties();
+            result.setGroup();
+            return (result as UnionBoard).board;
+        });
     }
 
     private placeFirstBlock(controlPositions: Position[], blockTable: ClusteredBlockTable): any[] /*WIS[]*/ {

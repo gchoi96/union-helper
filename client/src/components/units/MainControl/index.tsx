@@ -6,28 +6,24 @@ import useBoard from "#hooks/useBoard";
 import useCharacterList from "#hooks/useCharacterList";
 import * as S from "./styles";
 export function MainControl() {
-    const {
-        getTotalLevel,
-        getOccupiableSize,
-        reset: resetCharacterList,
-        getUnionGrade,
-        autoSelect,
-    } = useCharacterList();
+    const { getTotalLevel, getOccupiableSize, getUnionGrade, autoSelect } = useCharacterList();
     const { getSelectedCount, reset: resetBoard, simulate, updateBoard } = useBoard();
     const alert = useAlert();
-    const onClickReset = () => {
-        resetCharacterList();
-        resetBoard();
-    };
 
-    const onClickExec = () => {
+    const onClickExec = async () => {
         autoSelect();
-        const simResult = simulate();
-        if (!simResult) {
-            alert("가능한 배치가 존재하지 않습니다.");
-            return;
-        }
-        updateBoard(simResult);
+        simulate()
+            .then((result) => {
+                if (!result) {
+                    alert("가능한 배치가 존재하지 않습니다.");
+                    return;
+                }
+                updateBoard(result);
+            })
+            .catch(() => {
+                alert("가능한 배치가 존재하지 않습니다.");
+                return;
+            });
     };
 
     return (
@@ -46,11 +42,16 @@ export function MainControl() {
                 </Counter>
             </S.CounterWrapper>
             <S.ButtonWrapper>
-                <Button size="large" onClick={() => {alert("오류가 있어 수정 중입니다.")}}>
+                <Button
+                    size="large"
+                    onClick={() => {
+                        alert("오류가 있어 수정 중입니다.");
+                    }}
+                >
                     점령지역 자동선택
                 </Button>
                 <div>
-                    <Button size="large" type={BUTTON_TYPE.RED} onClick={onClickReset}>
+                    <Button size="large" type={BUTTON_TYPE.RED} onClick={resetBoard}>
                         초기화
                     </Button>
                     <Button size="large" type={BUTTON_TYPE.GREEN} onClick={onClickExec}>

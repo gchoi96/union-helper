@@ -38,7 +38,8 @@ export class Shape {
     }
 
     createKey() {
-        return this.deltas
+        return [...this.deltas]
+            .map((delta) => ({ ...delta }))
             .sort((posA, posB) => {
                 if (posA.dy === posB.dy) return posA.dx - posB.dx;
                 return posA.dy - posB.dy;

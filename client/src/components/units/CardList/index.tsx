@@ -1,7 +1,8 @@
 import { CARD_PER_PAGE } from "#constants/numbers";
 import useCharacterList from "#hooks/useCharacterList";
+// import _useCharacterList from "#hooks/_useCharacterList";
 import { useKey } from "#hooks/useKey";
-import { useReducer, WheelEventHandler } from "react";
+import { useEffect, useReducer, WheelEventHandler } from "react";
 import { Card } from "#components/units/Card";
 import * as S from "./styles";
 interface PageState {
@@ -48,7 +49,6 @@ export function CardList() {
         const isUp = e.deltaY > 0;
         dispatchPage(isUp ? PAGE_ACTION_TYPES.DECREASE : PAGE_ACTION_TYPES.INCREASE);
     };
-
     return (
         <S.Container onWheel={onWheel}>
             <img
