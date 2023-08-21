@@ -15,7 +15,7 @@ export const useCharacterQueries = (nicknames: string[]) => {
         queries: nicknames.map((nickname) => ({
             queryKey: ["character", nickname],
             queryFn: async () =>
-                get(`http://localhost:4000/character/?nickname=${nickname}`).then((res) =>
+                get(`${process.env.REACT_APP_SERVER_ADDRESS}/character/?nickname=${nickname}`).then((res) =>
                     convertResponseToCharacter(res)
                 ),
             cacheTime: Infinity,

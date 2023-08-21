@@ -2,11 +2,6 @@ import styled from "@emotion/styled";
 import { flex } from "#styles/mixin";
 import { ALIGN_ITEMS, JUSTIFY_CONTENT } from "#enums/flex";
 import { BACKGROUND_COLOR, TEXT_COLOR } from "#constants/colors";
-import { css } from "@emotion/css";
-
-const inputStyle = css`
-
-`;
 
 export const Container = styled.div`
     ${flex({ justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN, alignItems: ALIGN_ITEMS.CENTER })}

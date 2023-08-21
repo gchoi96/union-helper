@@ -9,6 +9,7 @@ import useCharacterList from "#hooks/useCharacterList";
 import { getGradeFromCharacterLevel } from "#utils";
 import { css } from "@emotion/css";
 import * as S from "./styles";
+import { v4 as uuidv4 } from "uuid";
 const boxOptions = {
     width: "180px",
     height: "220px",
@@ -37,6 +38,7 @@ export function AbilityList() {
                                     className={css`
                                         text-align: initial;
                                     `}
+                                    key={uuidv4()}
                                 >
                                     {ability}
                                 </p>
@@ -45,8 +47,10 @@ export function AbilityList() {
                 </Box>
                 <Blank size={6} direction="horizontal" />
                 <Box label="공격대 점령 효과" {...boxOptions}>
-                    {Object.entries(getAbilityList()).map(([abilityName, value]) => (
-                        <p>{`${abilityName} ${value}${abilityName === EXTERNAL_AREA.상태이상내성 ? "" : "%"} 증가`}</p>
+                    {Object.entries(getAbilityList()).map(([abilityName, value], idx) => (
+                        <p key={uuidv4()}>{`${abilityName} ${value}${
+                            abilityName === EXTERNAL_AREA.상태이상내성 ? "" : "%"
+                        } 증가`}</p>
                     ))}
                 </Box>
             </S.BoxWrapper>

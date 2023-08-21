@@ -4,7 +4,6 @@ import { EXTERNAL_AREA } from "#enums/externalArea";
 import { CSSProperties } from "react";
 import Position from "#classes/Position";
 import { AREA_BORDER_MAP } from "#constants/maps";
-import { BORDER_COLOR, COLOR } from "#constants/colors";
 
 export default class Cell {
     public status: CELL_STATUS;

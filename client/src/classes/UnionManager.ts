@@ -30,7 +30,7 @@ export default class UnionManager {
                     if (!end) continue;
                     resolve(wis.board);
                 }
-                // reject("가능한 배치 없음")
+                reject("가능한 배치 없음")
             });
 
         return Promise.any(wises.map(inner)).then((result) => {
@@ -54,7 +54,7 @@ export default class UnionManager {
                         const copiedBoard = this.board.copy();
                         const wis = new WIS({ board: copiedBoard, blockTable: copiedBlockTable });
                         wis.placeFirstBLock(shapeIdx, targetPositions);
-                        return new WIS({ board: copiedBoard, blockTable: copiedBlockTable });
+                        return wis;
                     });
                 });
             })

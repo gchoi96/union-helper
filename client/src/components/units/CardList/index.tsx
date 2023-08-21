@@ -1,10 +1,9 @@
 import { CARD_PER_PAGE } from "#constants/numbers";
 import useCharacterList from "#hooks/useCharacterList";
-// import _useCharacterList from "#hooks/_useCharacterList";
-import { useKey } from "#hooks/useKey";
-import { useEffect, useReducer, WheelEventHandler } from "react";
+import { useReducer, WheelEventHandler } from "react";
 import { Card } from "#components/units/Card";
 import * as S from "./styles";
+import { v4 as uuidv4 } from "uuid";
 interface PageState {
     currentPage: number;
     firstIndex: number;
@@ -39,7 +38,6 @@ const initialPageState = {
 export function CardList() {
     const { characterList } = useCharacterList();
     const [pageState, dispatchPage] = useReducer(pageReducer(characterList.length, CARD_PER_PAGE), initialPageState);
-    const { generate } = useKey("card");
     const calcDummyCount = () => {
         if (pageState.lastIndex - pageState.firstIndex === CARD_PER_PAGE - 1) return 0;
         return CARD_PER_PAGE - (characterList.length % CARD_PER_PAGE);
@@ -58,10 +56,10 @@ export function CardList() {
             />
             <S.Page>
                 {characterList.slice(pageState.firstIndex, pageState.lastIndex + 1).map((character, idx) => (
-                    <Card character={character} key={generate()} />
+                    <Card character={character} key={uuidv4()} />
                 ))}
                 {new Array(calcDummyCount()).fill(0).map((_, idx) => (
-                    <S.Dummy key={`card_dummy_${idx}`} />
+                    <S.Dummy key={uuidv4()} />
                 ))}
             </S.Page>
             <img
@@ -72,3 +70,4 @@ export function CardList() {
         </S.Container>
     );
 }
+ 

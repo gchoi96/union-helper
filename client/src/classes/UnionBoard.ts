@@ -142,7 +142,7 @@ export default class UnionBoard {
             .join("\n");
     }
 
-    getAdjacentPositions(position: Position) {
+    static getAdjacentPositions(position: Position) {
         return UnionBoard.searchDirection
             .map((delta) => position.move(delta))
             .filter((pos) => UnionBoard.isValidPosition(pos));

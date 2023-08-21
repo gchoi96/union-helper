@@ -17,9 +17,9 @@ export default class CharacterController {
     }
 
     async findOne(req: express.Request, res: express.Response) {
-        const { nickname, renew } = req.query as unknown as GetCharacterInputs;
+        const { nickname, refetch } = req.query as unknown as GetCharacterInputs;
         try {
-            const character = await (renew === "1"
+            const character = await (refetch === "1"
                 ? this.service.renew(nickname)
                 : this.service.findOne(nickname));
             this.sendSuccessResponse(res, character);

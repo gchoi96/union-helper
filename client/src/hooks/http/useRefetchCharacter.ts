@@ -13,7 +13,7 @@ export const useRefetchCharacter = (nickname: string) => {
         setIsLoading(true);
         queryClient
             .fetchQuery(["character", nickname], async () =>
-                get(`http://localhost:4000/character/?nickname=${nickname}`).then((res) => {
+                get(`${process.env.REACT_APP_SERVER_ADDRESS}/character/?nickname=${nickname}&refetch=${1}`).then((res) => {
                     const character = convertResponseToCharacter(res);
                     update([character]);
                     return character;

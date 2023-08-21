@@ -9,7 +9,7 @@ import { useAlert } from "#hooks/useAlert";
 import useCharacterList from "#hooks/useCharacterList";
 import { ChangeEventHandler, useState } from "react";
 import * as S from "./styles";
-
+import { v4 as uuidv4 } from "uuid";
 const labelOptions = {
     color: TEXT_COLOR.WHITE,
     size: "12px",
@@ -67,7 +67,7 @@ export function AddCharacterModal({ closeModal }: Props) {
                     {Object.keys(JOB_NAME)
                         .filter((name) => name !== JOB_NAME.메이플M)
                         .map((name, idx) => (
-                            <option key={`{job_${idx}}`}>{name}</option>
+                            <option key={uuidv4()}>{name}</option>
                         ))}
                 </select>
                 <Blank size={20} />

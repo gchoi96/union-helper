@@ -4,8 +4,9 @@ import { MESSAGE } from "#constants/strings";
 import { useAlert } from "#hooks/useAlert";
 import { Character } from "#types/character";
 import { ChangeEventHandler, HTMLAttributes, useState } from "react";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from "@tanstack/react-query";
 import * as S from "./styles";
+import { v4 as uuidv4 } from "uuid";
 
 interface CharacterInfoInput extends HTMLAttributes<HTMLDivElement> {
     character: Character;
@@ -36,7 +37,7 @@ export default function CharacterInput({ character }: CharacterInfoInput) {
             alert(MESSAGE.MISSING_REQUIRED_INPUT);
             return;
         }
-        queryClient.setQueryData(['character', character.nickname], {...character, level, job: JOB_MAP[job]}, {});
+        queryClient.setQueryData(["character", character.nickname], { ...character, level, job: JOB_MAP[job] }, {});
     };
 
     return (
@@ -47,7 +48,7 @@ export default function CharacterInput({ character }: CharacterInfoInput) {
                 <S.JobSelect onChange={onChangeSelect}>
                     <option value="">직업</option>
                     {Object.keys(JOB_MAP).map((job, idx) => (
-                        <option value={job} key={`job_${idx}`}>
+                        <option value={job} key={uuidv4()}>
                             {job}
                         </option>
                     ))}

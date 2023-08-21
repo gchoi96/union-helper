@@ -9,6 +9,7 @@ import useTooltip from "#hooks/useTooltip";
 import { Tooltip } from "#components/commons/Tooltip";
 import * as S from "./styles";
 import { useAlert } from "#hooks/useAlert";
+import { v4 as uuidv4 } from "uuid";
 export function Board() {
     const { removeBlocks, board, changeCellStatus, getSelectedCount } = useBoard();
     const { getOccupiableSize } = useCharacterList();
@@ -53,12 +54,12 @@ export function Board() {
         <S.Container>
             <S.Board onMouseLeave={() => setHoveredBlock(null)} ref={containerRef}>
                 {board.map((row, rIdx) => (
-                    <div>
+                    <div key={uuidv4()}>
                         {row.map((cell, cIdx) => (
                             <Cell
                                 draggable={false}
                                 id={`${rIdx}_${cIdx}`}
-                                key={`${rIdx}_${cIdx}`}
+                                key={uuidv4()}
                                 data={cell}
                                 isHovered={!!(cell.occupyingBlock && cell.occupyingBlock === hoveredBlock)}
                                 onMouseUp={onMouseUp}
