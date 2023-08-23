@@ -36,7 +36,7 @@ export const Tooltip = {
     Image: styled.div<TooltipImageProps>`
         width: 50%;
         height: 90px;
-        background: url(${({ url }) => url ?? NO_CHAR_IMAGE}) no-repeat;
+        background: url(${({ url }) => url || NO_CHAR_IMAGE}) no-repeat;
         background-size: 200%;
         background-position: -40px -45px;
         margin-bottom: 2px;

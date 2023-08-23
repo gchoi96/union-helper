@@ -26,7 +26,7 @@ export const Header = styled.div`
 `;
 
 export const Image = styled.div<{ url?: string }>`
-    background: url(${({ url }) => url ?? NO_CHAR_IMAGE}) no-repeat;
+    background: url(${({ url }) => url || NO_CHAR_IMAGE}) no-repeat;
     height: 85px;
     width: 100%;
     background-size: 150%;

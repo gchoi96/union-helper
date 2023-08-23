@@ -62,7 +62,7 @@ export function AddCharacterModal({ closeModal }: Props) {
             <S.Container>
                 <Txt {...labelOptions}>직업</Txt>
                 <Blank size={7} />
-                <select onChange={onChangeSelect}>
+                <select onChange={onChangeSelect} value={job}>
                     <option value="">선택</option>
                     {Object.keys(JOB_NAME)
                         .filter((name) => name !== JOB_NAME.메이플M)

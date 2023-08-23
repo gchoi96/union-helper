@@ -71,7 +71,7 @@ export function Board() {
                                 isHovered={!!(cell.occupyingBlock && cell.occupyingBlock === hoveredBlock)}
                                 onMouseUp={onMouseUp}
                                 onMouseDown={onMouseDown(rIdx, cIdx)}
-                                onMouseEnter={() => {
+                                onMouseOver={() => {
                                     onMouseEnter(rIdx, cIdx);
                                     onHover(rIdx, cIdx);
                                 }}
