@@ -9,7 +9,7 @@ export const calcUnionGrade = (totalLevel: number): UnionGrade => {
 };
 
 export const extractCharacterList = (copiedText: string): string[] => {
-    const splitText = copiedText.split("\n");
+    const splitText = copiedText.split(/\r?\n/);
     const accountDetailIndex = splitText.findIndex((str) => str.includes(SELECT_WORLD_CHARACTER));
     if (accountDetailIndex === -1) throw new Error(ERROR.INVALID_COPIED_TEXT);
     const [worldIndex, listStartIndex] = [accountDetailIndex + 1, accountDetailIndex + 2];

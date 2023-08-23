@@ -1,7 +1,7 @@
 import useBoard from "#hooks/useBoard";
 import { CELL_STATUS } from "#enums/status";
 import { MESSAGE } from "#constants/strings";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import useCharacterList from "#hooks/useCharacterList";
 import { Cell } from "#components/units/Cell";
 import { Block } from "#classes/Block";
@@ -30,21 +30,28 @@ export function Board() {
 
     const onMouseUp = () => setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
 
-    const toggleCellStatus = (rIdx: number, cIdx: number) => () => {
-        const prevStatus = board[rIdx][cIdx].status;
-        const nextStatus = prevStatus !== CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
-        if (nextStatus === CELL_STATUS.SELECTED && getSelectedCount() + 1 > getOccupiableSize()) {
-            alert(MESSAGE.ALREADY_SELECT_MAXIMUM_COUNT);
-            setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
-            return;
-        }
-        changeCellStatus({ rIdx, cIdx, status: nextStatus });
-    };
+    const toggleCellStatus = useCallback(
+        (rIdx: number, cIdx: number) => () => {
+            const prevStatus = board[rIdx][cIdx].status;
+            const nextStatus =
+                prevStatus !== CELL_STATUS.NOT_SELECTED ? CELL_STATUS.NOT_SELECTED : CELL_STATUS.SELECTED;
+            if (nextStatus === CELL_STATUS.SELECTED && getSelectedCount() + 1 > getOccupiableSize()) {
+                alert(MESSAGE.ALREADY_SELECT_MAXIMUM_COUNT);
+                setDragStatus({ dragging: false, target: CELL_STATUS.NOT_SELECTED });
+                return;
+            }
+            changeCellStatus({ rIdx, cIdx, status: nextStatus });
+        },
+        [alert, board, changeCellStatus, getOccupiableSize, getSelectedCount]
+    );
 
-    const onMouseEnter = (rIdx: number, cIdx: number) => {
-        if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
-        toggleCellStatus(rIdx, cIdx)();
-    };
+    const onMouseEnter = useCallback(
+        (rIdx: number, cIdx: number) => {
+            if (!dragStatus.dragging || board[rIdx][cIdx].status !== dragStatus.target) return;
+            toggleCellStatus(rIdx, cIdx)();
+        },
+        [dragStatus, board, toggleCellStatus]
+    );
 
     const onHover = (rIdx: number, cIdx: number) => {
         setHoveredBlock(board[rIdx][cIdx].occupyingBlock ?? null);
