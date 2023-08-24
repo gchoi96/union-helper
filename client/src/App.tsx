@@ -1,23 +1,26 @@
-import React from 'react';
-
+import { Alert } from "#components/commons/Alert";
+import { PageLayout } from "#components/commons/PageLayout";
+import { UnionPage } from "#pages/UnionPage";
+import { RecoilRoot } from "recoil";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: Infinity,
+        },
+    },
+});
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <RecoilRoot>
+            <QueryClientProvider client={queryClient}>
+                <PageLayout>
+                    <UnionPage></UnionPage>
+                </PageLayout>
+                <Alert />
+            </QueryClientProvider>
+        </RecoilRoot>
+    );
 }
 
 export default App;

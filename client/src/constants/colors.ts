@@ -1,6 +1,7 @@
-import { BUTTON_STATUS, CELL_STATUS } from "#enums/status";
+import { JOB_GROUP } from "#enums/job";
+import { BUTTON_TYPE, CELL_STATUS } from "#enums/status";
 
-const COLOR = {
+export const COLOR = {
     BLACK: "#000000",
     BLUE: "#1E8D9D",
     DARKGRAY: "#222423",
@@ -10,6 +11,7 @@ const COLOR = {
     GRAY3: "#42484C",
     DARKGRAY3: "#464643",
     BLUE2: "#4C96B2",
+    DARKGRAY4: "#333333",
     GRAY4: "#4F4F4F",
     GRAY5: "#535350",
     GRAY6: "#616161",
@@ -18,6 +20,7 @@ const COLOR = {
     GRAY7: "#808280",
     GRAY8: "#8C8C8E",
     GRAY9: "#999999",
+    GRAY10: "#888888",
     TAN: "#BE9A6F",
     RED: "#C20606",
     BROWN: "#CA8",
@@ -37,6 +40,7 @@ const COLOR = {
     PINK: "#F7A8B8",
     WHITE: "#FFFFFF",
     TRANSPARENT_BLACK: "rgba(0, 0, 0, 0.75)",
+    TRANSPARENT_BLACK2: "rgba(0, 0, 0, 0.25)",
     TRANSPARENT_WHITE: "rgba(255, 255, 255, 0)",
 };
 
@@ -54,19 +58,26 @@ const GRADIENT = {
 };
 
 export const CELL_COLOR = {
-    [CELL_STATUS.AVAILABLE]: { NORMAL: COLOR.GRAY2, HOVER: COLOR.GRAY5 },
-    [CELL_STATUS.UNAVAILABLE]: { NORMAL: "#552F2F", HOVER: "#743E3E" },
-    [CELL_STATUS.TO_BE_OCCUPIED]: {
+    [CELL_STATUS.NOT_SELECTED]: { NORMAL: COLOR.GRAY2, HOVER: COLOR.GRAY5 },
+    [CELL_STATUS.SELECTED]: {
         NORMAL: GRADIENT.BEIGE,
         HOVER: GRADIENT.BROWN,
     },
-    [CELL_STATUS.OCCUPIED]: { NORMAL: COLOR.TEAL, HOVER: "" },
+    [CELL_STATUS.PLACED]: {
+        [JOB_GROUP.도적]: { NORMAL: "#8A58D3", HOVER: "#6C4ACB" },
+        [JOB_GROUP.궁수]: { NORMAL: "#A2C451", HOVER: "#6F9839" },
+        [JOB_GROUP.전사]: { NORMAL: "#C5375C", HOVER: "#AA214D" },
+        [JOB_GROUP.해적]: { NORMAL: "#8B867F", HOVER: "#6F7274" },
+        [JOB_GROUP.마법사]: { NORMAL: "#93C4D4", HOVER: "#2C92A4" },
+        [JOB_GROUP.제논]: { NORMAL: COLOR.PALE, HOVER: COLOR.TAN2 },
+    },
 };
 
 export const SHADOW_COLOR = {
     BLACK: COLOR.TRANSPARENT_BLACK,
-    CHARACTER_COUNTER: COLOR.GRAY4,
+    CHARACTER_COUNTER: COLOR.DARKGRAY4,
     UNION_GRADE: COLOR.YELLOW,
+    TRANSPARENT: COLOR.TRANSPARENT_BLACK2,
 };
 
 export const BACKGROUND_COLOR = {
@@ -81,6 +92,7 @@ export const BACKGROUND_COLOR = {
 export const BORDER_COLOR = {
     DARK_ORANGE: COLOR.BROWN,
     GRAY: COLOR.SILVER,
+    CELL: COLOR.GRAY10,
 };
 
 export const CARD_BUTTON_COLOR = {
@@ -89,17 +101,17 @@ export const CARD_BUTTON_COLOR = {
 };
 
 export const TEXT_BUTTON_COLOR = {
-    [BUTTON_STATUS.BLUE]: {
+    [BUTTON_TYPE.BLUE]: {
         background: GRADIENT.TEAL,
         font: COLOR.WHITE,
         border: COLOR.TEAL2,
     },
-    [BUTTON_STATUS.RED]: {
+    [BUTTON_TYPE.RED]: {
         background: GRADIENT.RED,
         font: COLOR.WHITE,
         border: COLOR.CORAL2,
     },
-    [BUTTON_STATUS.GREEN]: {
+    [BUTTON_TYPE.GREEN]: {
         background: GRADIENT.GREEN,
         font: COLOR.WHITE,
         border: COLOR.YELLOW2,

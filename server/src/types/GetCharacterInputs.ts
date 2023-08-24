@@ -1,4 +1,4 @@
 export default interface GetCharacterInputs {
     nickname: string;
-    renew: string | undefined;
+    refetch: string | undefined;
 }
