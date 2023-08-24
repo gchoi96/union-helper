@@ -22,15 +22,17 @@ export default class UnionManager {
     }
 
     private async getPlacementResult(wises: WIS[]) {
+        let isEnd = false;
         const inner = (wis: WIS) =>
             new Promise<UnionBoard>((resolve, reject) => {
                 let iterationCount = 0;
                 while (++iterationCount < MAX_ITERATION_COUNT) {
-                    const end = wis.next();
-                    if (!end) continue;
+                    if (isEnd) break;
+                    if (!wis.next()) continue;
+                    isEnd = true;
                     resolve(wis.board);
                 }
-                reject("가능한 배치 없음")
+                reject("가능한 배치 없음");
             });
 
         return Promise.any(wises.map(inner)).then((result) => {
