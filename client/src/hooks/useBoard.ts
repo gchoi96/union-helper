@@ -1,16 +1,14 @@
-import { Block } from "#classes/Block";
 import Cell from "#classes/Cell";
-import UnionBoard from "#classes/UnionBoard";
-import UnionManager from "#classes/UnionManager";
 import { EXTERNAL_AREA } from "#enums/externalArea";
 import { CELL_STATUS } from "#enums/status";
 import boardState from "#store/board";
 import { useRecoilState, useResetRecoilState } from "recoil";
+import { useAlert } from "./useAlert";
 import useCharacterList from "./useCharacterList";
-
 export default function useBoard() {
     const [board, setBoard] = useRecoilState(boardState);
     const reset = useResetRecoilState(boardState);
+    const alert = useAlert();
     const { getSelectedList } = useCharacterList();
     const changeCellStatus = ({ rIdx, cIdx, status }: { rIdx: number; cIdx: number; status: CELL_STATUS }) => {
         setBoard((prev) => {
@@ -57,11 +55,15 @@ export default function useBoard() {
     };
 
     const simulate = () => {
-        const unionManager = new UnionManager(
-            getSelectedList().map((character) => Block.blockFactory(character)),
-            new UnionBoard(board)
-        );
-        return unionManager.simulate();
+        const worker = new Worker(new URL("../workers/place.ts", import.meta.url));
+        worker.postMessage({ characters: getSelectedList(), board: JSON.parse(JSON.stringify(board)) });
+        worker.onmessage = ({ data }: MessageEvent<Cell[][] | null>) => {
+            if (data === null) {
+                alert("가능한 배치가 존재하지 않습니다.");
+                return;
+            }
+            updateBoard(data as Cell[][]);
+        };
     };
 
     const removeBlocks = () => {
@@ -76,12 +78,6 @@ export default function useBoard() {
         );
     };
 
-    const test = () => {
-        return board
-            .map((row) => row.filter((cell) => cell.status === CELL_STATUS.SELECTED).map((cell) => cell.position))
-            .flat();
-    };
-
     return {
         board,
         getAbilityList,
@@ -92,6 +88,5 @@ export default function useBoard() {
         reset,
         simulate,
         updateBoard,
-        test,
     };
 }

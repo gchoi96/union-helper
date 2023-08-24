@@ -8,29 +8,13 @@ import { AREA_BORDER_MAP } from "#constants/maps";
 export default class Cell {
     public status: CELL_STATUS;
     occupyingBlock: Block | null = null;
-    private _ability: EXTERNAL_AREA | undefined;
+    public ability: EXTERNAL_AREA | undefined;
     public group: Position[] = [];
     public css: CSSProperties | undefined;
-    private _position: Position;
-
-    get position() {
-        return this._position;
-    }
-
-    get ability() {
-        return this._ability;
-    }
-
-    set ability(ability: EXTERNAL_AREA | undefined) {
-        this._ability = ability;
-    }
+    public position: Position;
 
     get isSelected() {
         return this.status === CELL_STATUS.SELECTED;
-    }
-
-    get isPlaced() {
-        return this.status === CELL_STATUS.PLACED;
     }
 
     constructor(
@@ -41,13 +25,13 @@ export default class Cell {
     ) {
         this.status = status;
         this.occupyingBlock = occupyingBlock;
-        this._ability = ability;
-        this._position = position;
+        this.ability = ability;
+        this.position = position;
         this.css = this.initBorder();
     }
 
     private initBorder() {
-        const borders = AREA_BORDER_MAP.get(this._position);
+        const borders = AREA_BORDER_MAP.get(this.position);
         if (!borders) return {};
         return borders.reduce((css, dir) => {
             css[`border${dir}`] = `0.2px solid white`;
@@ -66,6 +50,6 @@ export default class Cell {
     }
 
     copy() {
-        return new Cell(this.position, this._ability, this.status, this.occupyingBlock);
+        return new Cell(this.position, this.ability, this.status, this.occupyingBlock);
     }
 }

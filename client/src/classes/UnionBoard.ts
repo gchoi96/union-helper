@@ -87,7 +87,6 @@ export default class UnionBoard {
                 const position = cell.position;
                 let css: CSSProperties = { ...cell.css, borderColor: "white" };
                 const direction = ["Top", "Right", "Left", "Bottom"];
-                UnionBoard.searchDirection.map((delta) => position.move(delta));
                 UnionBoard.searchDirection.forEach((delta, idx) => {
                     const _position = position.move(delta);
                     if (!UnionBoard.isValidPosition(_position)) return;

@@ -7,23 +7,12 @@ import useCharacterList from "#hooks/useCharacterList";
 import * as S from "./styles";
 export function MainControl() {
     const { getTotalLevel, getOccupiableSize, getUnionGrade, autoSelect } = useCharacterList();
-    const { getSelectedCount, reset: resetBoard, simulate, updateBoard } = useBoard();
+    const { getSelectedCount, reset: resetBoard, simulate } = useBoard();
     const alert = useAlert();
 
     const onClickExec = async () => {
         autoSelect();
-        simulate()
-            .then((result) => {
-                if (!result) {
-                    alert("가능한 배치가 존재하지 않습니다.");
-                    return;
-                }
-                updateBoard(result);
-            })
-            .catch(() => {
-                alert("가능한 배치가 존재하지 않습니다.");
-                return;
-            });
+        simulate();
     };
 
     return (
