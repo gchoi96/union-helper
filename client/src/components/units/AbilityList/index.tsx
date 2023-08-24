@@ -20,7 +20,7 @@ export function AbilityList() {
     const { getAbilityList } = useBoard();
     return (
         <S.Container>
-            <Txt.GradientTxt gradient={TEXT_COLOR.CONTROL_TITLE}>공격대 효과</Txt.GradientTxt>
+            <Txt.GradientTxt weight={700} gradient={TEXT_COLOR.CONTROL_TITLE}>공격대 효과</Txt.GradientTxt>
             <Blank size={7} />
             <S.BoxWrapper>
                 <Box label="공격대원 효과" {...boxOptions}>

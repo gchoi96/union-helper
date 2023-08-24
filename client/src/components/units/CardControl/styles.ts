@@ -23,7 +23,7 @@ export const Summary = styled.div`
     color: ${TEXT_COLOR.WHITE};
     width: 60px;
     > p {
-        font-weight: 600;
+        font-weight: 700;
         font-size: 11px;
     }
     > :not(:first-child) {
@@ -44,7 +44,7 @@ export const ControlWrapper = styled.div`
 `;
 
 export const Button = styled.div<{ type?: BUTTON_TYPE }>`
-    font-weight: 600;
+    font-weight: 700;
     box-shadow: 0px 2px 1px 0px ${SHADOW_COLOR.BLACK};
     border-radius: 5px;
     cursor: pointer;
@@ -59,6 +59,6 @@ export const Button = styled.div<{ type?: BUTTON_TYPE }>`
     }
 `;
 export const MobileTxt = styled.div`
-    width: 80px;
+    width: 90px;
     text-align: center;
 `;

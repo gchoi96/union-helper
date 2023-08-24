@@ -16,7 +16,7 @@ export function CardControl() {
     return (
         <S.Container>
             <div>
-                <Txt.GradientTxt gradient={TEXT_COLOR.CONTROL_TITLE} shadow={`0px 2px 2px ${SHADOW_COLOR.BLACK}`}>
+                <Txt.GradientTxt weight={700} gradient={TEXT_COLOR.CONTROL_TITLE} shadow={`0px 2px 2px ${SHADOW_COLOR.BLACK}`}>
                     유니온 캐릭터
                 </Txt.GradientTxt>
                 <S.Summary>

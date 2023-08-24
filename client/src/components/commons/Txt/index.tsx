@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<HTMLParagraphElement> {
     color?: string;
 }
 
-export function Txt({ size = "13px", border, weight = 500, color = TEXT_COLOR.BLACK, children, ...props }: Props) {
+export function Txt({ size = "13px", border, weight = 400, color = TEXT_COLOR.BLACK, children, ...props }: Props) {
     return (
         <S.Txt border={border} weight={weight} size={size} color={color} {...props}>
             {children}

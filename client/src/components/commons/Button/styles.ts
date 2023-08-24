@@ -8,7 +8,7 @@ interface ButtonProps {
 }
 
 export const Button = styled.div<ButtonProps>`
-    font-weight: 600;
+    font-weight: 700;
     box-shadow: 0px 2px 1px 0px ${SHADOW_COLOR.BLACK};
     border-radius: 5px;
     cursor: pointer;

@@ -19,7 +19,7 @@ export const Container = styled.div<ContainerProps>`
     height: ${({ height }) => height};
     text-align: center;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.2px;
     color: ${TEXT_COLOR.BOX_CONTENT};
 `;

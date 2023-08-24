@@ -19,6 +19,7 @@ export const Container = styled.div`
 
 export const Title = styled.p`
     font-size: 14px;
+    font-weight: 800;
 `;
 
 export const Content = styled.p`
